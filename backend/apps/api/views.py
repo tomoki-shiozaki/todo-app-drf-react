@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, permissions
 
-from apps.api.serializers import TodoSerializer
+from apps.api.serializers import TodoSerializer, TodoToggleCompleteSerializer
 from apps.todo.models import Todo
 
 
@@ -30,3 +30,16 @@ class TodoRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         # user can only update, delete own posts
         return Todo.objects.filter(user=user)
+
+
+class TodoToggleComplete(generics.UpdateAPIView):
+    serializer_class = TodoToggleCompleteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Todo.objects.filter(user=user)
+
+    def perform_update(self, serializer):
+        serializer.instance.completed = not (serializer.instance.completed)
+        serializer.save()
