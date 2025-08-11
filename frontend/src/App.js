@@ -10,17 +10,52 @@ import TodosList from "./components/TodosList";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+  const user = null;
+
   return (
     <div className="App">
       <Navbar bg="primary" variant="dark">
         <div className="container-fluid">
-          <Navbar.Brand>React-bootstrap</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+          <Navbar.Brand>TodosApp</Navbar.Brand>
+          <Nav
+            className="me-auto"
+            variant="pills"
+            defaultActiveKey="/todos"
+            style={{ display: "flex", gap: "10px" }} // これで横並びにする
+          >
+            <Nav.Item>
+              <Link className="nav-link" to={"/todos"}>
+                Todos
+              </Link>
+            </Nav.Item>
+            {user ? (
+              <Nav.Item>
+                <Link className="nav-link">Logout ({user})</Link>
+              </Nav.Item>
+            ) : (
+              <>
+                <Nav.Item>
+                  <Link className="nav-link" to={"/login"}>
+                    Login
+                  </Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Link className="nav-link" to={"/signup"}>
+                    Sign Up
+                  </Link>
+                </Nav.Item>
+              </>
+            )}
           </Nav>
         </div>
       </Navbar>
+
+      <Routes>
+        <Route path="/todos" element={<TodosList />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/add-todo" element={<AddTodo />} />
+      </Routes>
     </div>
   );
 }
