@@ -39,11 +39,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 3rd-party apps
     "rest_framework",
+    "rest_framework.authtoken",
     # Local
     "apps.accounts.apps.AccountsConfig",
     "apps.api.apps.ApiConfig",
     "apps.todo.apps.TodoConfig",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ]
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

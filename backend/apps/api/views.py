@@ -1,8 +1,22 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.shortcuts import render
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import JSONParser
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
-from apps.api.serializers import TodoSerializer, TodoToggleCompleteSerializer
+from apps.api.serializers import (
+    SignupSerializer,
+    TodoSerializer,
+    TodoToggleCompleteSerializer,
+)
 from apps.todo.models import Todo
+
+User = get_user_model()
 
 
 # Create your views here.
@@ -43,3 +57,14 @@ class TodoToggleComplete(generics.UpdateAPIView):
     def perform_update(self, serializer):
         serializer.instance.completed = not (serializer.instance.completed)
         serializer.save()
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def signup(request):
+    serializer = SignupSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
