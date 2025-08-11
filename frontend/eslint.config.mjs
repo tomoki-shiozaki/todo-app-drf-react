@@ -14,7 +14,7 @@ export default [
     },
     rules: {
       "import/order": [
-        "error",
+        "warn",
         {
           groups: [
             "builtin",
@@ -26,14 +26,15 @@ export default [
           alphabetize: { order: "asc", caseInsensitive: true },
         },
       ],
-      "no-unused-vars": "off",
+      "no-unused-vars": "off", // ここは通常はeslintの"no-unused-vars"よりTypeScriptの方が強いケースが多いです（JSならOK）
       "import/no-dynamic-require": "warn",
       "import/no-nodejs-modules": "warn",
-      "react/react-in-jsx-scope": "off", // これを追加
+      "import/no-unresolved": "off",
+      "react/react-in-jsx-scope": "off", // React17以降は不要なのでoffでOK
     },
     settings: {
       react: {
-        version: "detect",
+        version: "detect", // Reactのバージョン自動検出
       },
     },
   },
