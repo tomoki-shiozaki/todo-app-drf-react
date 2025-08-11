@@ -13,15 +13,16 @@ function App() {
   const [user, setUser] = React.useState(null);
   const [token, setToken] = React.useState(null);
   const [error, setError] = React.useState("");
+
   async function login(user = null) {
-    // default user to null
     setUser(user);
   }
+
   async function logout() {
     setUser(null);
   }
+
   async function signup(user = null) {
-    // default user to null
     setUser(user);
   }
 
@@ -34,7 +35,7 @@ function App() {
             className="me-auto"
             variant="pills"
             defaultActiveKey="/todos"
-            style={{ display: "flex", gap: "10px" }} // これで横並びにする
+            style={{ display: "flex", gap: "10px" }}
           >
             <Nav.Item>
               <Link className="nav-link" to={"/todos"}>
@@ -43,7 +44,9 @@ function App() {
             </Nav.Item>
             {user ? (
               <Nav.Item>
-                <Link className="nav-link">Logout ({user})</Link>
+                <Link className="nav-link" onClick={logout}>
+                  Logout ({user})
+                </Link>
               </Nav.Item>
             ) : (
               <>
@@ -63,12 +66,16 @@ function App() {
         </div>
       </Navbar>
 
-      <Routes>
-        <Route path="/todos" element={<TodosList />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/add-todo" element={<AddTodo />} />
-      </Routes>
+      <Container className="mt-4">
+        <Routes>
+          <Route path="/" element={<TodosList token={token} />} />
+          <Route path="/todos" element={<TodosList token={token} />} />
+          <Route path="/todos/create" element={<AddTodo token={token} />} />
+          <Route path="/todos/:id" element={<AddTodo token={token} />} />
+          <Route path="/login" element={<Login login={login} />} />
+          <Route path="/signup" element={<Signup signup={signup} />} />
+        </Routes>
+      </Container>
     </div>
   );
 }
