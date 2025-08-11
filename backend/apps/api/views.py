@@ -1,11 +1,7 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-from django.db import IntegrityError
-from django.shortcuts import render
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import generics, permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -68,3 +64,26 @@ def signup(request):
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"token": token.key}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    if username is None or password is None:
+        return Response(
+            {"error": "Username and password are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    user = authenticate(username=username, password=password)
+
+    if user is None:
+        return Response(
+            {"error": "Invalid username or password."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    token, created = Token.objects.get_or_create(user=user)
+    return Response({"token": token.key})
