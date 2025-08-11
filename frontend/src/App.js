@@ -10,7 +10,20 @@ import TodosList from "./components/TodosList";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const user = null;
+  const [user, setUser] = React.useState(null);
+  const [token, setToken] = React.useState(null);
+  const [error, setError] = React.useState("");
+  async function login(user = null) {
+    // default user to null
+    setUser(user);
+  }
+  async function logout() {
+    setUser(null);
+  }
+  async function signup(user = null) {
+    // default user to null
+    setUser(user);
+  }
 
   return (
     <div className="App">
