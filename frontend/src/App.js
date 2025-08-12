@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Routes, Route, Link } from "react-router-dom";
@@ -16,6 +17,7 @@ function App() {
   const [token, setToken] = React.useState(null);
   const [error, setError] = React.useState("");
 
+  // ログイン時にトークンセット
   async function login(user) {
     if (!user || !user.username || !user.password) {
       setError("Username and password are required.");
@@ -24,10 +26,12 @@ function App() {
 
     try {
       const data = await TodoDataService.login(user);
+      console.log("Login token:", data.token);
       setToken(data.token);
       setUser(user.username);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", user.username);
+      setError("");
     } catch (e) {
       console.log("login", e);
       const message = e.response?.data?.message || e.message || "Login failed.";
@@ -35,6 +39,7 @@ function App() {
     }
   }
 
+  // ログアウト処理
   async function logout() {
     setUser(null);
     setToken(null);
@@ -42,9 +47,20 @@ function App() {
     localStorage.removeItem("user");
   }
 
+  // サインアップ処理（必要に応じて）
   async function signup(user = null) {
     setUser(user);
   }
+
+  // マウント時にlocalStorageから復元
+  React.useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+    if (savedUser && savedToken) {
+      setUser(savedUser);
+      setToken(savedToken);
+    }
+  }, []);
 
   return (
     <div className="App">

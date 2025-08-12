@@ -2,12 +2,15 @@ import axios from "axios";
 
 // Axios インスタンスの作成
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000/api", // 環境変数からURLを取得（デフォルトはlocalhost）
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000/api",
 });
 
-// Authorization ヘッダーを設定する関数
 const setAuthHeader = (token) => {
-  api.defaults.headers.common["Authorization"] = `Token ${token}`;
+  if (token) {
+    api.defaults.headers.common["Authorization"] = `Token ${token}`;
+  } else {
+    delete api.defaults.headers.common["Authorization"];
+  }
 };
 
 class TodoDataService {
