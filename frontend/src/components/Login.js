@@ -12,10 +12,10 @@ const Login = (props) => {
   const onChangeUsername = (e) => setUsername(e.target.value);
   const onChangePassword = (e) => setPassword(e.target.value);
 
-  const login = () => {
+  const login = async () => {
     if (props.login) {
-      props.login({ username, password });
-      navigate("/");
+      await props.login({ username, password }); // 🔸 非同期処理を待つ
+      navigate("/"); // 🔸 成功後に遷移
     }
   };
 

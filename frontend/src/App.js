@@ -23,12 +23,11 @@ function App() {
     }
 
     try {
-      const response = await TodoDataService.login(user);
-      setToken(response.data.token);
+      const data = await TodoDataService.login(user);
+      setToken(data.token);
       setUser(user.username);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", data.token);
       localStorage.setItem("user", user.username);
-      setError("");
     } catch (e) {
       console.log("login", e);
       const message = e.response?.data?.message || e.message || "Login failed.";
@@ -38,6 +37,9 @@ function App() {
 
   async function logout() {
     setUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   }
 
   async function signup(user = null) {
@@ -85,12 +87,19 @@ function App() {
       </Navbar>
 
       <Container className="mt-4">
+        {/* エラーメッセージの表示 */}
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+
         <Routes>
           <Route path="/" element={<TodosList token={token} />} />
           <Route path="/todos" element={<TodosList token={token} />} />
           <Route path="/todos/create" element={<AddTodo token={token} />} />
           <Route path="/todos/:id" element={<AddTodo token={token} />} />
-          <Route path="/login" element={<Login login={login} />} />
+          <Route path="/login" element={<Login login={login} user={user} />} />
           <Route path="/signup" element={<Signup signup={signup} />} />
         </Routes>
       </Container>
@@ -103,6 +112,7 @@ function App() {
           © Copyright -{" "}
           <a
             target="_blank"
+            rel="noreferrer"
             className="text-reset fw-bold text-decoration-none"
             href="https://twitter.com/greglim81"
           >
@@ -111,6 +121,7 @@ function App() {
           -{" "}
           <a
             target="_blank"
+            rel="noreferrer"
             className="text-reset fw-bold text-decoration-none"
             href="https://twitter.com/danielgarax"
           >
