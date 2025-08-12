@@ -7,6 +7,8 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import TodosList from "./components/TodosList";
 
+import TodoDataService from "./services/todos";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -14,8 +16,24 @@ function App() {
   const [token, setToken] = React.useState(null);
   const [error, setError] = React.useState("");
 
-  async function login(user = null) {
-    setUser(user);
+  async function login(user) {
+    if (!user || !user.username || !user.password) {
+      setError("Username and password are required.");
+      return;
+    }
+
+    try {
+      const response = await TodoDataService.login(user);
+      setToken(response.data.token);
+      setUser(user.username);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", user.username);
+      setError("");
+    } catch (e) {
+      console.log("login", e);
+      const message = e.response?.data?.message || e.message || "Login failed.";
+      setError(message);
+    }
   }
 
   async function logout() {
