@@ -1,7 +1,7 @@
 // src/App.js
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { Routes, Route, Link } from "react-router-dom";
+import { useLocation, Routes, Route, Link } from "react-router-dom";
 
 import AddTodo from "./components/AddTodo";
 import Login from "./components/Login";
@@ -10,12 +10,11 @@ import TodosList from "./components/TodosList";
 
 import TodoDataService from "./services/todos";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-
 function App() {
   const [user, setUser] = React.useState(null);
   const [token, setToken] = React.useState(null);
   const [error, setError] = React.useState("");
+  const location = useLocation();
 
   // ログイン時にトークンセット
   async function login(user) {
@@ -70,14 +69,15 @@ function App() {
           <Nav
             className="me-auto"
             variant="pills"
-            defaultActiveKey="/todos"
+            activeKey={location.pathname}
             style={{ display: "flex", gap: "10px" }}
           >
             <Nav.Item>
-              <Link className="nav-link" to={"/todos"}>
+              <Nav.Link as={Link} to="/todos" eventKey="/todos">
                 Todos
-              </Link>
+              </Nav.Link>
             </Nav.Item>
+
             {user ? (
               <Nav.Item>
                 <Link className="nav-link" onClick={logout}>
@@ -87,14 +87,14 @@ function App() {
             ) : (
               <>
                 <Nav.Item>
-                  <Link className="nav-link" to={"/login"}>
+                  <Nav.Link as={Link} to="/login" eventKey="/login">
                     Login
-                  </Link>
+                  </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Link className="nav-link" to={"/signup"}>
+                  <Nav.Link as={Link} to="/signup" eventKey="/signup">
                     Sign Up
-                  </Link>
+                  </Nav.Link>
                 </Nav.Item>
               </>
             )}
