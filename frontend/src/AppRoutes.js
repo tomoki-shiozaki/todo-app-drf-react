@@ -2,8 +2,8 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import AddTodo from "./components/AddTodo";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import TodosList from "./components/TodosList";
 
 function AppRoutes({ token, user, login, signup }) {
