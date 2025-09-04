@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Axios インスタンスの作成
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000/api",
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1",
 });
 
 const setAuthHeader = (token) => {
@@ -71,7 +71,7 @@ class TodoDataService {
 
   async login(data) {
     try {
-      const response = await api.post("/login/", data);
+      const response = await api.post("/dj-rest-auth/login/", data);
       return response.data;
     } catch (error) {
       console.error("Error during login:", error);

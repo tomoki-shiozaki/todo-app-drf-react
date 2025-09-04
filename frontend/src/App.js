@@ -20,16 +20,23 @@ function App() {
     }
 
     try {
-      const data = await TodoDataService.login(user);
-      console.log("Login token:", data.token);
-      setToken(data.token);
+      const data = await TodoDataService.login(user); // { key: "..." }
+
+      const token = data.key;
+      if (!token) {
+        throw new Error("No token returned from server.");
+      }
+
+      setToken(token);
       setUser(user.username);
-      localStorage.setItem("token", data.token);
+
+      localStorage.setItem("token", token);
       localStorage.setItem("user", user.username);
+
       setError("");
     } catch (e) {
-      console.log("login", e);
-      const message = e.response?.data?.message || e.message || "Login failed.";
+      console.error("login error:", e);
+      const message = e.response?.data?.detail || e.message || "Login failed.";
       setError(message);
     }
   }
