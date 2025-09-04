@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { useLocation, Link } from "react-router-dom";
@@ -7,7 +6,7 @@ import TodoDataService from "./services/todos";
 import AppRoutes from "./AppRoutes";
 
 function App() {
-  const [user, setUser] = React.useState(null);
+  const [currentUsername, setCurrentUsername] = React.useState(null);
   const [token, setToken] = React.useState(null);
   const [error, setError] = React.useState("");
   const location = useLocation();
@@ -28,7 +27,7 @@ function App() {
       }
 
       setToken(token);
-      setUser(user.username);
+      setCurrentUsername(user.username);
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", user.username);
@@ -43,7 +42,7 @@ function App() {
 
   // ログアウト処理
   async function logout() {
-    setUser(null);
+    setCurrentUsername(null);
     setToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -51,7 +50,7 @@ function App() {
 
   // サインアップ処理（必要に応じて）
   async function signup(user = null) {
-    setUser(user);
+    setCurrentUsername(user);
   }
 
   // マウント時にlocalStorageから復元
@@ -59,7 +58,7 @@ function App() {
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
     if (savedUser && savedToken) {
-      setUser(savedUser);
+      setCurrentUsername(savedUser);
       setToken(savedToken);
     }
   }, []);
@@ -81,10 +80,10 @@ function App() {
               </Nav.Link>
             </Nav.Item>
 
-            {user ? (
+            {currentUsername ? (
               <Nav.Item>
                 <Link className="nav-link" onClick={logout}>
-                  Logout ({user})
+                  Logout ({currentUsername})
                 </Link>
               </Nav.Item>
             ) : (
@@ -113,13 +112,15 @@ function App() {
           </div>
         )}
 
-        <AppRoutes token={token} user={user} login={login} signup={signup} />
+        <AppRoutes
+          token={token}
+          user={currentUsername}
+          login={login}
+          signup={signup}
+        />
       </Container>
 
-      <footer
-        className="text-center text-lg-start
-        bg-light text-muted mt-4"
-      >
+      <footer className="text-center text-lg-start bg-light text-muted mt-4">
         <div className="text-center p-4">
           © Copyright -{" "}
           <a
