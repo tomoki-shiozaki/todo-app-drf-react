@@ -2,66 +2,14 @@ import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { useLocation, Link } from "react-router-dom";
 
-import TodoDataService from "./services/todos";
 import AppRoutes from "./AppRoutes";
+import useAuth from "./hooks/useAuth";
 
 function App() {
-  const [currentUsername, setCurrentUsername] = React.useState(null);
-  const [token, setToken] = React.useState(null);
-  const [error, setError] = React.useState("");
+  const { currentUsername, token, error, login, logout, signup, setError } =
+    useAuth();
+
   const location = useLocation();
-
-  // ログイン時にトークンセット
-  async function login(user) {
-    if (!user || !user.username || !user.password) {
-      setError("Username and password are required.");
-      return;
-    }
-
-    try {
-      const data = await TodoDataService.login(user); // { key: "..." }
-
-      const token = data.key;
-      if (!token) {
-        throw new Error("No token returned from server.");
-      }
-
-      setToken(token);
-      setCurrentUsername(user.username);
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", user.username);
-
-      setError("");
-    } catch (e) {
-      console.error("login error:", e);
-      const message = e.response?.data?.detail || e.message || "Login failed.";
-      setError(message);
-    }
-  }
-
-  // ログアウト処理
-  async function logout() {
-    setCurrentUsername(null);
-    setToken(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-  }
-
-  // サインアップ処理（必要に応じて）
-  async function signup(user = null) {
-    setCurrentUsername(user);
-  }
-
-  // マウント時にlocalStorageから復元
-  React.useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
-    if (savedUser && savedToken) {
-      setCurrentUsername(savedUser);
-      setToken(savedToken);
-    }
-  }, []);
 
   return (
     <div className="App">
@@ -111,7 +59,6 @@ function App() {
             {error}
           </div>
         )}
-
         <AppRoutes
           token={token}
           user={currentUsername}
