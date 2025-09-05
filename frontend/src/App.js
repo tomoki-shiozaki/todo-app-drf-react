@@ -5,9 +5,10 @@ import { useLocation, Link } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import useAuth from "./hooks/useAuth";
 
+import { useAuthContext } from "./context/AuthContext";
+
 function App() {
-  const { currentUsername, token, error, login, logout, signup, setError } =
-    useAuth();
+  const { currentUsername, error, logout } = useAuthContext();
 
   const location = useLocation();
 
@@ -59,12 +60,7 @@ function App() {
             {error}
           </div>
         )}
-        <AppRoutes
-          token={token}
-          user={currentUsername}
-          login={login}
-          signup={signup}
-        />
+        <AppRoutes />
       </Container>
 
       <footer className="text-center text-lg-start bg-light text-muted mt-4">

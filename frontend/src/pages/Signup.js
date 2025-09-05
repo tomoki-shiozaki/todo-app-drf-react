@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import useAuth from "../hooks/useAuth";
+import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
-  const { signup, error } = useAuth();
+  const { signup, error } = useAuthContext();
   const navigate = useNavigate(); // ← これ追加！
 
   const [formData, setFormData] = useState({

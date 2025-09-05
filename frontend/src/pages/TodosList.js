@@ -4,18 +4,21 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import TodoDataService from "../services/todos";
+import { useAuthContext } from "../context/AuthContext"; // 追加！
 
-const TodosList = (props) => {
+const TodosList = () => {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const { token } = useAuthContext(); // ここで context から token を取得！
+
   useEffect(() => {
-    if (!props.token) return;
+    if (!token) return;
 
     const retrieveTodos = () => {
       setLoading(true);
-      TodoDataService.getAll(props.token)
+      TodoDataService.getAll(token)
         .then((data) => {
           setTodos(data);
           setLoading(false);
@@ -27,11 +30,11 @@ const TodosList = (props) => {
     };
 
     retrieveTodos();
-  }, [props.token]);
+  }, [token]);
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this todo?")) {
-      TodoDataService.deleteTodo(id, props.token)
+      TodoDataService.deleteTodo(id, token)
         .then(() => {
           setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
         })
@@ -42,7 +45,7 @@ const TodosList = (props) => {
     }
   };
 
-  if (!props.token) {
+  if (!token) {
     return <p>Please log in to see your todos.</p>;
   }
 
