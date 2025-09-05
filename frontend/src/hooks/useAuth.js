@@ -41,11 +41,18 @@ export default function useAuth() {
     }
   };
 
-  const logout = () => {
-    setCurrentUsername(null);
-    setToken(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("currentUsername");
+  const logout = async () => {
+    try {
+      await TodoDataService.logout(); // APIを呼ぶ
+    } catch (error) {
+      console.error("Logout API error:", error);
+      // エラーでもトークンはクリアしたいのでcatchに処理を入れておく
+    } finally {
+      setCurrentUsername(null);
+      setToken(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("currentUsername");
+    }
   };
 
   const signup = async (user = null) => {

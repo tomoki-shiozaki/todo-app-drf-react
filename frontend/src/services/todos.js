@@ -15,31 +15,38 @@ const setAuthHeader = (token) => {
 
 class TodoDataService {
   async getAll(token) {
-    setAuthHeader(token);
     try {
-      const response = await api.get("/todos/");
+      const response = await api.get("/todos/", {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      });
       return response.data;
     } catch (error) {
-      console.error("Error fetching todos:", error);
       throw error;
     }
   }
 
   async createTodo(data, token) {
-    setAuthHeader(token);
     try {
-      const response = await api.post("/todos/", data);
+      const response = await api.post("/todos/", data, {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      });
       return response.data;
     } catch (error) {
-      console.error("Error creating todo:", error);
       throw error;
     }
   }
 
   async updateTodo(id, data, token) {
-    setAuthHeader(token);
     try {
-      const response = await api.put(`/todos/${id}`, data);
+      const response = await api.put(`/todos/${id}`, data, {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error updating todo:", error);
@@ -48,9 +55,12 @@ class TodoDataService {
   }
 
   async deleteTodo(id, token) {
-    setAuthHeader(token);
     try {
-      const response = await api.delete(`/todos/${id}`);
+      const response = await api.delete(`/todos/${id}`, {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error deleting todo:", error);
@@ -59,9 +69,12 @@ class TodoDataService {
   }
 
   async completeTodo(id, token) {
-    setAuthHeader(token);
     try {
-      const response = await api.put(`/todos/${id}/complete`);
+      const response = await api.put(`/todos/${id}/complete`, null, {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error completing todo:", error);
@@ -77,6 +90,18 @@ class TodoDataService {
       console.error("Error during login:", error);
       throw error;
     }
+  }
+
+  async logout() {
+    return await api.post(
+      "/dj-rest-auth/logout/",
+      {},
+      {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      }
+    );
   }
 
   async signup(data) {
