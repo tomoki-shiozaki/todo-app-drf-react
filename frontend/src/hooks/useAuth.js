@@ -56,8 +56,53 @@ export default function useAuth() {
   };
 
   const signup = async (user = null) => {
-    // 必要であればここに signup 処理を書く
-    setCurrentUsername(user?.username ?? null);
+    if (
+      !user ||
+      !user.username ||
+      !user.email ||
+      !user.password1 ||
+      !user.password2
+    ) {
+      setError("すべてのフィールドを入力してください。");
+      return;
+    }
+
+    try {
+      await TodoDataService.signup(user);
+      const loginData = await TodoDataService.login({
+        username: user.username,
+        password: user.password1,
+      });
+
+      console.log("loginData from signup:", loginData);
+
+      const token = loginData.key;
+      console.log("token from loginData:", token);
+
+      if (!token)
+        throw new Error(
+          "ログインに失敗しました。トークンが返されませんでした。"
+        );
+
+      setToken(token);
+      setCurrentUsername(user.username);
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUsername", user.username);
+      setError("");
+    } catch (e) {
+      console.error("signup error:", e);
+
+      if (e.response && e.response.data) {
+        const firstError = Object.values(e.response.data)[0];
+        if (Array.isArray(firstError)) {
+          setError(firstError[0]);
+        } else {
+          setError(firstError);
+        }
+      } else {
+        setError(e.message || "Signup failed.");
+      }
+    }
   };
 
   return {

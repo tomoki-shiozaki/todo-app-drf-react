@@ -106,7 +106,7 @@ class TodoDataService {
 
   async signup(data) {
     try {
-      const response = await api.post("/signup/", data);
+      const response = await api.post("/dj-rest-auth/registration/", data);
       return response.data;
     } catch (error) {
       console.error("Error during signup:", error);
