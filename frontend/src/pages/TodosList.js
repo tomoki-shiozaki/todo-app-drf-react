@@ -66,10 +66,6 @@ const TodosList = () => {
     return <p>Loading todos...</p>;
   }
 
-  if (todos.length === 0) {
-    return <p>No todos found.</p>;
-  }
-
   return (
     <Container>
       {/* 新規追加ボタン */}
