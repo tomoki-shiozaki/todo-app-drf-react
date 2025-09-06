@@ -3,25 +3,23 @@ import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import { useAuthContext } from "../context/AuthContext"; // ここを追加
 
-const Login = (props) => {
+const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Contextからlogin関数を取得
+  const { login, error } = useAuthContext();
+
   const onChangeUsername = (e) => setUsername(e.target.value);
   const onChangePassword = (e) => setPassword(e.target.value);
 
-  const login = async () => {
-    if (props.login) {
-      await props.login({ username, password }); // 🔸 非同期処理を待つ
-      navigate("/"); // 🔸 成功後に遷移
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login();
+    await login({ username, password });
+    navigate("/"); // ログイン成功後にtodosへ遷移
   };
 
   return (
@@ -34,6 +32,7 @@ const Login = (props) => {
             placeholder="Enter username"
             value={username}
             onChange={onChangeUsername}
+            required
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -43,8 +42,10 @@ const Login = (props) => {
             placeholder="Enter password"
             value={password}
             onChange={onChangePassword}
+            required
           />
         </Form.Group>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <Button variant="primary" type="submit">
           Login
         </Button>

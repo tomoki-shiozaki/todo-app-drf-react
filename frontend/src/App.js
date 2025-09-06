@@ -1,61 +1,16 @@
-// src/App.js
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { useLocation, Link } from "react-router-dom";
 
-import TodoDataService from "./services/todos";
 import AppRoutes from "./AppRoutes";
+import useAuth from "./hooks/useAuth";
+
+import { useAuthContext } from "./context/AuthContext";
 
 function App() {
-  const [user, setUser] = React.useState(null);
-  const [token, setToken] = React.useState(null);
-  const [error, setError] = React.useState("");
+  const { currentUsername, error, logout } = useAuthContext();
+
   const location = useLocation();
-
-  // ログイン時にトークンセット
-  async function login(user) {
-    if (!user || !user.username || !user.password) {
-      setError("Username and password are required.");
-      return;
-    }
-
-    try {
-      const data = await TodoDataService.login(user);
-      console.log("Login token:", data.token);
-      setToken(data.token);
-      setUser(user.username);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", user.username);
-      setError("");
-    } catch (e) {
-      console.log("login", e);
-      const message = e.response?.data?.message || e.message || "Login failed.";
-      setError(message);
-    }
-  }
-
-  // ログアウト処理
-  async function logout() {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-  }
-
-  // サインアップ処理（必要に応じて）
-  async function signup(user = null) {
-    setUser(user);
-  }
-
-  // マウント時にlocalStorageから復元
-  React.useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
-    if (savedUser && savedToken) {
-      setUser(savedUser);
-      setToken(savedToken);
-    }
-  }, []);
 
   return (
     <div className="App">
@@ -74,10 +29,10 @@ function App() {
               </Nav.Link>
             </Nav.Item>
 
-            {user ? (
+            {currentUsername ? (
               <Nav.Item>
                 <Link className="nav-link" onClick={logout}>
-                  Logout ({user})
+                  Logout ({currentUsername})
                 </Link>
               </Nav.Item>
             ) : (
@@ -105,14 +60,10 @@ function App() {
             {error}
           </div>
         )}
-
-        <AppRoutes token={token} user={user} login={login} signup={signup} />
+        <AppRoutes />
       </Container>
 
-      <footer
-        className="text-center text-lg-start
-        bg-light text-muted mt-4"
-      >
+      <footer className="text-center text-lg-start bg-light text-muted mt-4">
         <div className="text-center p-4">
           © Copyright -{" "}
           <a
