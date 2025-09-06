@@ -63,7 +63,7 @@ class TodoDataService {
 
   async completeTodo(id, token) {
     try {
-      const response = await api.put(`/todos/${id}/complete`, null, {
+      const response = await api.put(`/todos/${id}/complete/`, null, {
         headers: {
           Authorization: token ? `Token ${token}` : "",
         },

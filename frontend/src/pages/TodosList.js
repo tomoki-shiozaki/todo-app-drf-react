@@ -9,7 +9,6 @@ import { useAuthContext } from "../context/AuthContext"; // 追加！
 const TodosList = () => {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   const { token } = useAuthContext(); // ここで context から token を取得！
 
@@ -44,6 +43,21 @@ const TodosList = () => {
     }
   };
 
+  const handleComplete = async (id) => {
+    try {
+      await TodoDataService.completeTodo(id, token);
+      // 完了トグルがサーバー側で行われるので、ローカルでも反映
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        )
+      );
+    } catch (error) {
+      console.error("Failed to toggle completion:", error);
+      alert("完了状態の切り替えに失敗しました。");
+    }
+  };
+
   if (!token) {
     return <p>Please log in to see your todos.</p>;
   }
@@ -74,7 +88,23 @@ const TodosList = () => {
                 <b>Memo:</b> {todo.memo}
               </Card.Text>
               <Card.Text>Date created: {todo.created}</Card.Text>
+              <Card.Text>
+                状態:{" "}
+                <span style={{ color: todo.completed ? "green" : "red" }}>
+                  {todo.completed ? "完了" : "未完了"}
+                </span>
+              </Card.Text>
             </div>
+            {/* 完了ボタン */}
+            <Button
+              variant={todo.completed ? "secondary" : "success"}
+              className="me-2"
+              onClick={() => handleComplete(todo.id)}
+            >
+              {todo.completed ? "未完了に戻す" : "完了にする"}
+            </Button>
+
+            {/* 編集ボタン */}
             <Link
               to={{
                 pathname: "/todos/" + todo.id,
