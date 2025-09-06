@@ -66,10 +66,6 @@ const TodosList = () => {
     return <p>Loading todos...</p>;
   }
 
-  if (todos.length === 0) {
-    return <p>No todos found.</p>;
-  }
-
   return (
     <Container>
       {/* 新規追加ボタン */}
@@ -79,51 +75,55 @@ const TodosList = () => {
         </Link>
       </div>
 
-      {todos.map((todo) => (
-        <Card key={todo.id} className="mb-3">
-          <Card.Body>
-            <div>
-              <Card.Title>{todo.title}</Card.Title>
-              <Card.Text>
-                <b>Memo:</b> {todo.memo}
-              </Card.Text>
-              <Card.Text>Date created: {todo.created}</Card.Text>
-              <Card.Text>
-                状態:{" "}
-                <span style={{ color: todo.completed ? "green" : "red" }}>
-                  {todo.completed ? "完了" : "未完了"}
-                </span>
-              </Card.Text>
-            </div>
-            {/* 完了ボタン */}
-            <Button
-              variant={todo.completed ? "secondary" : "success"}
-              className="me-2"
-              onClick={() => handleComplete(todo.id)}
-            >
-              {todo.completed ? "未完了に戻す" : "完了にする"}
-            </Button>
-
-            {/* 編集ボタン */}
-            <Link
-              to={{
-                pathname: "/todos/" + todo.id,
-                state: { currentTodo: todo },
-              }}
-            >
-              <Button variant="outline-info" className="me-2">
-                Edit
+      {todos.length === 0 ? (
+        <p>No todos found. </p> // Todosがない場合のメッセージ
+      ) : (
+        todos.map((todo) => (
+          <Card key={todo.id} className="mb-3">
+            <Card.Body>
+              <div>
+                <Card.Title>{todo.title}</Card.Title>
+                <Card.Text>
+                  <b>Memo:</b> {todo.memo}
+                </Card.Text>
+                <Card.Text>Date created: {todo.created}</Card.Text>
+                <Card.Text>
+                  状態:{" "}
+                  <span style={{ color: todo.completed ? "green" : "red" }}>
+                    {todo.completed ? "完了" : "未完了"}
+                  </span>
+                </Card.Text>
+              </div>
+              {/* 完了ボタン */}
+              <Button
+                variant={todo.completed ? "secondary" : "success"}
+                className="me-2"
+                onClick={() => handleComplete(todo.id)}
+              >
+                {todo.completed ? "未完了に戻す" : "完了にする"}
               </Button>
-            </Link>
-            <Button
-              variant="outline-danger"
-              onClick={() => handleDelete(todo.id)}
-            >
-              Delete
-            </Button>
-          </Card.Body>
-        </Card>
-      ))}
+
+              {/* 編集ボタン */}
+              <Link
+                to={{
+                  pathname: "/todos/" + todo.id,
+                  state: { currentTodo: todo },
+                }}
+              >
+                <Button variant="outline-info" className="me-2">
+                  Edit
+                </Button>
+              </Link>
+              <Button
+                variant="outline-danger"
+                onClick={() => handleDelete(todo.id)}
+              >
+                Delete
+              </Button>
+            </Card.Body>
+          </Card>
+        ))
+      )}
     </Container>
   );
 };

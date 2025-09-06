@@ -98,6 +98,7 @@ class TodoDataService {
   }
 
   async signup(data) {
+    console.log("Sending signup data:", data);
     try {
       const response = await api.post("/dj-rest-auth/registration/", data);
       return response.data;
