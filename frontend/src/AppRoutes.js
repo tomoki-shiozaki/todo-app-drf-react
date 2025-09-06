@@ -14,8 +14,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/todos" replace />} />
       <Route path="/todos" element={<TodosList token={token} />} />
-      <Route path="/todos/create" element={<AddTodo token={token} />} />
-      <Route path="/todos/:id" element={<AddTodo token={token} />} />
+      <Route path="/todos/create" element={<AddTodo />} />
+      <Route path="/todos/:id" element={<AddTodo />} />
       <Route
         path="/login"
         element={<Login login={login} user={currentUsername} />}
