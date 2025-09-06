@@ -59,6 +59,13 @@ const TodosList = () => {
 
   return (
     <Container>
+      {/* 新規追加ボタン */}
+      <div className="mb-3">
+        <Link to="/todos/create">
+          <Button variant="primary">新しいTodoを追加</Button>
+        </Link>
+      </div>
+
       {todos.map((todo) => (
         <Card key={todo.id} className="mb-3">
           <Card.Body>

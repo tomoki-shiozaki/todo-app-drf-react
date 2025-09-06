@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 
 function AddTodo() {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
-  const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const { token } = useAuthContext();
 
@@ -17,15 +18,11 @@ function AddTodo() {
 
     try {
       const result = await TodoDataService.createTodo(data, token);
-      setMessage("Todoを追加しました！");
       setError(null);
-      setTitle("");
-      setMemo("");
-      console.log("Created todo:", result);
+      navigate("/todos");
     } catch (err) {
       console.error("Error creating todo:", err);
       setError("Todoの追加に失敗しました。");
-      setMessage("");
     }
   };
 
@@ -53,7 +50,6 @@ function AddTodo() {
         <button type="submit">追加</button>
       </form>
 
-      {message && <p style={{ color: "green" }}>{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
