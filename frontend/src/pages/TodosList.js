@@ -32,16 +32,15 @@ const TodosList = () => {
     retrieveTodos();
   }, [token]);
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this todo?")) {
-      TodoDataService.deleteTodo(id, token)
-        .then(() => {
-          setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-        })
-        .catch((e) => {
-          console.error(e);
-          alert("Failed to delete todo.");
-        });
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this todo?")) return;
+
+    try {
+      await TodoDataService.deleteTodo(id, token);
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } catch (e) {
+      console.error(e);
+      alert("Failed to delete todo.");
     }
   };
 
