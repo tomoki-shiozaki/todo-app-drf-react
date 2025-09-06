@@ -40,32 +40,25 @@ class TodoDataService {
     }
   }
 
+  async getTodoById(id, token) {
+    const response = await api.get(`/todos/${id}/`, {
+      headers: { Authorization: token ? `Token ${token}` : "" },
+    });
+    return response.data;
+  }
+
   async updateTodo(id, data, token) {
-    try {
-      const response = await api.put(`/todos/${id}`, data, {
-        headers: {
-          Authorization: token ? `Token ${token}` : "",
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error updating todo:", error);
-      throw error;
-    }
+    const response = await api.put(`/todos/${id}/`, data, {
+      headers: { Authorization: token ? `Token ${token}` : "" },
+    });
+    return response.data;
   }
 
   async deleteTodo(id, token) {
-    try {
-      const response = await api.delete(`/todos/${id}`, {
-        headers: {
-          Authorization: token ? `Token ${token}` : "",
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error deleting todo:", error);
-      throw error;
-    }
+    const response = await api.delete(`/todos/${id}/`, {
+      headers: { Authorization: token ? `Token ${token}` : "" },
+    });
+    return response.data;
   }
 
   async completeTodo(id, token) {
