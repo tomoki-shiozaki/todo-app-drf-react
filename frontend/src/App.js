@@ -1,57 +1,17 @@
 import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
-import { useLocation, Link } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 import AppRoutes from "./AppRoutes";
-import useAuth from "./hooks/useAuth";
 
 import { useAuthContext } from "./context/AuthContext";
+import AppNavbar from "./components/Navbar";
 
 function App() {
-  const { currentUsername, error, logout } = useAuthContext();
-
-  const location = useLocation();
+  const { error } = useAuthContext();
 
   return (
     <div className="App">
-      <Navbar bg="primary" variant="dark">
-        <div className="container-fluid">
-          <Navbar.Brand>TodosApp</Navbar.Brand>
-          <Nav
-            className="me-auto"
-            variant="pills"
-            activeKey={location.pathname}
-            style={{ display: "flex", gap: "10px" }}
-          >
-            <Nav.Item>
-              <Nav.Link as={Link} to="/todos" eventKey="/todos">
-                Todos
-              </Nav.Link>
-            </Nav.Item>
-
-            {currentUsername ? (
-              <Nav.Item>
-                <Link className="nav-link" onClick={logout}>
-                  Logout ({currentUsername})
-                </Link>
-              </Nav.Item>
-            ) : (
-              <>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/login" eventKey="/login">
-                    Login
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/signup" eventKey="/signup">
-                    Sign Up
-                  </Nav.Link>
-                </Nav.Item>
-              </>
-            )}
-          </Nav>
-        </div>
-      </Navbar>
+      <AppNavbar />
 
       <Container className="mt-4">
         {/* エラーメッセージの表示 */}
