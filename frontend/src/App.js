@@ -11,11 +11,11 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App d-flex flex-column min-vh-100">
       <ErrorProvider>
         <AuthProvider>
           <AppNavbar />
-          <Container className="mt-4">
+          <Container className="mt-4 flex-grow-1">
             <ErrorAlert />
             <AppRoutes />
           </Container>
