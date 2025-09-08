@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useErrorContext } from "./ErrorContext";
 import TodoDataService from "../services/todos";
 
 // Context を作成
@@ -8,7 +9,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [currentUsername, setCurrentUsername] = useState(null);
   const [token, setToken] = useState(null);
-  const [error, setError] = useState("");
+  const { setError } = useErrorContext();
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("currentUsername");
@@ -110,11 +111,9 @@ export const AuthProvider = ({ children }) => {
       value={{
         currentUsername,
         token,
-        error,
         login,
         logout,
         signup,
-        setError,
       }}
     >
       {children}

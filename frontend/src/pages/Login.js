@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Contextからlogin関数を取得
-  const { login, error } = useAuthContext();
+  const { login } = useAuthContext();
 
   const onChangeUsername = (e) => setUsername(e.target.value);
   const onChangePassword = (e) => setPassword(e.target.value);
@@ -45,7 +45,7 @@ const Login = () => {
             required
           />
         </Form.Group>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+
         <Button variant="primary" type="submit">
           Login
         </Button>
