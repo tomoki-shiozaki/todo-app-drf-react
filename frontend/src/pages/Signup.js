@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import useAuth from "../hooks/useAuth";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
-  const { signup, error } = useAuthContext();
+  const { signup } = useAuthContext();
   const navigate = useNavigate(); // ← これ追加！
 
   const [formData, setFormData] = useState({
@@ -35,7 +34,7 @@ function Signup() {
   return (
     <div className="signup-container">
       <h2>Sign Up</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>Username:</label>

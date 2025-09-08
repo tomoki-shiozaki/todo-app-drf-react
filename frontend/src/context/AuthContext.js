@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import TodoDataService from "../services/todos";
+import { useErrorContext } from "./ErrorContext";
+import AuthService from "../services/auth";
 
 // Context を作成
 const AuthContext = createContext();
@@ -8,7 +9,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [currentUsername, setCurrentUsername] = useState(null);
   const [token, setToken] = useState(null);
-  const [error, setError] = useState("");
+  const { setError } = useErrorContext();
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("currentUsername");
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const data = await TodoDataService.login(user); // { key: "..." }
+      const data = await AuthService.login(user); // { key: "..." }
       const token = data.key;
       if (!token) throw new Error("No token returned from server.");
 
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await TodoDataService.logout();
+      await AuthService.logout();
     } catch (error) {
       console.error("Logout API error:", error);
       // エラーでもトークンはクリアしたいのでcatchに処理を入れておく
@@ -72,8 +73,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      await TodoDataService.signup(user);
-      const loginData = await TodoDataService.login({
+      await AuthService.signup(user);
+      const loginData = await AuthService.login({
         username: user.username,
         password: user.password1,
       });
@@ -110,11 +111,9 @@ export const AuthProvider = ({ children }) => {
       value={{
         currentUsername,
         token,
-        error,
         login,
         logout,
         signup,
-        setError,
       }}
     >
       {children}

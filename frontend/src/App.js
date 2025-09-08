@@ -1,90 +1,27 @@
 import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
-import { useLocation, Link } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 import AppRoutes from "./AppRoutes";
-import useAuth from "./hooks/useAuth";
 
-import { useAuthContext } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { ErrorProvider } from "./context/ErrorContext";
+import AppNavbar from "./components/Navbar";
+import ErrorAlert from "./components/ErrorAlert";
+import Footer from "./components/Footer";
 
 function App() {
-  const { currentUsername, error, logout } = useAuthContext();
-
-  const location = useLocation();
-
   return (
-    <div className="App">
-      <Navbar bg="primary" variant="dark">
-        <div className="container-fluid">
-          <Navbar.Brand>TodosApp</Navbar.Brand>
-          <Nav
-            className="me-auto"
-            variant="pills"
-            activeKey={location.pathname}
-            style={{ display: "flex", gap: "10px" }}
-          >
-            <Nav.Item>
-              <Nav.Link as={Link} to="/todos" eventKey="/todos">
-                Todos
-              </Nav.Link>
-            </Nav.Item>
-
-            {currentUsername ? (
-              <Nav.Item>
-                <Link className="nav-link" onClick={logout}>
-                  Logout ({currentUsername})
-                </Link>
-              </Nav.Item>
-            ) : (
-              <>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/login" eventKey="/login">
-                    Login
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link as={Link} to="/signup" eventKey="/signup">
-                    Sign Up
-                  </Nav.Link>
-                </Nav.Item>
-              </>
-            )}
-          </Nav>
-        </div>
-      </Navbar>
-
-      <Container className="mt-4">
-        {/* エラーメッセージの表示 */}
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
-        <AppRoutes />
-      </Container>
-
-      <footer className="text-center text-lg-start bg-light text-muted mt-4">
-        <div className="text-center p-4">
-          © Copyright -{" "}
-          <a
-            target="_blank"
-            rel="noreferrer"
-            className="text-reset fw-bold text-decoration-none"
-            href="https://twitter.com/greglim81"
-          >
-            Greg Lim
-          </a>{" "}
-          -{" "}
-          <a
-            target="_blank"
-            rel="noreferrer"
-            className="text-reset fw-bold text-decoration-none"
-            href="https://twitter.com/danielgarax"
-          >
-            Daniel Correa
-          </a>
-        </div>
-      </footer>
+    <div className="App d-flex flex-column min-vh-100">
+      <ErrorProvider>
+        <AuthProvider>
+          <AppNavbar />
+          <Container className="mt-4 flex-grow-1">
+            <ErrorAlert />
+            <AppRoutes />
+          </Container>
+          <Footer />
+        </AuthProvider>
+      </ErrorProvider>
     </div>
   );
 }
