@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.12]
+        python-version: [3.12, 3.13]
 
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +30,12 @@ jobs:
 
       - name: Generate OpenAPI schema
         run: cd backend && python manage.py spectacular --file schema.yml
+
+      - name: Upload schema.yml
+        uses: actions/upload-artifact@v4
+        with:
+          name: schema-${{ matrix.python-version }}
+          path: backend/schema.yml
 
       - name: Verify schema.yml is up-to-date
         run: git diff --exit-code backend/schema.yml
