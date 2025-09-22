@@ -12,7 +12,7 @@ run-backend:
 
 # OpenAPI schema を生成
 generate-schema:
-	cd backend && .venv/bin/python manage.py spectacular --file schema.yml
+	cd backend && DEBUG=False .venv/bin/python manage.py spectacular --file schema.yml
 
 
 # ==============================
