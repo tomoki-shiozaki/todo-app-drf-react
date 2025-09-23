@@ -64,12 +64,20 @@ if DEBUG:
         "drf_spectacular",
     ]
 
+    SPECTACULAR_SETTINGS = {
+        "TITLE": "Todo App Project with Django REST Framework and React",
+        "DESCRIPTION": "This is a sample Todo application built for learning purposes using Django REST Framework on the backend and React on the frontend.",
+        "VERSION": "1.0.0",
+    }
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+if DEBUG:
+    REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
 
 if DEBUG:
     REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
@@ -90,12 +98,6 @@ else:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
         "rest_framework.renderers.JSONRenderer",
     ]
-
-SPECTACULAR_SETTINGS = {
-    "TITLE": "Todo App Project with Django REST Framework and React",
-    "DESCRIPTION": "This is a sample Todo application built for learning purposes using Django REST Framework on the backend and React on the frontend.",
-    "VERSION": "1.0.0",
-}
 
 
 MIDDLEWARE = [
