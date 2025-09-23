@@ -78,7 +78,7 @@ jobs:
         with:
           node-version: "24"
       - run: cd frontend && npm ci
-      - run: cd frontend && npm run test -- --coverage --coverageReporters=lcov
+      - run: cd frontend && npx vitest run --coverage
 
       # --- Upload to Codecov ---
       - name: Upload coverage reports to Codecov

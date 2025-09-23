@@ -22,6 +22,12 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "types": [
+      // Vitest のグローバル関数（describe, it, expect など）を import なしで使うため
+      "vitest/globals",
+      // Vitest のユーティリティ（vi, Mock, MockedFunction など）の型を補完するため
+      "vitest"
+    ],
 
     "allowJs": true, // JS ファイルの import を許可
     "checkJs": false, // (任意) JS ファイルを型チェックしない
