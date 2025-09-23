@@ -18,11 +18,6 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -35,6 +30,12 @@ urlpatterns = [
 
 # 開発環境のみ：Swagger UI / Redoc / browsable API ログイン
 if settings.DEBUG:
+    from drf_spectacular.views import (
+        SpectacularAPIView,
+        SpectacularRedocView,
+        SpectacularSwaggerView,
+    )
+
     urlpatterns += [
         path(
             "api-auth/", include("rest_framework.urls")

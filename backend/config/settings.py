@@ -53,45 +53,45 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "drf_spectacular",
     # Local
     "apps.accounts.apps.AccountsConfig",
     "apps.api.apps.ApiConfig",
     "apps.todo.apps.TodoConfig",
 ]
 
+GENERATE_SCHEMA = env.bool("GENERATE_SCHEMA", default=False)
+
+if GENERATE_SCHEMA:
+    INSTALLED_APPS += [
+        "drf_spectacular",
+    ]
+
+    SPECTACULAR_SETTINGS = {
+        "TITLE": "Todo App Project with Django REST Framework and React",
+        "DESCRIPTION": "This is a sample Todo application built for learning purposes using Django REST Framework on the backend and React on the frontend.",
+        "VERSION": "1.0.0",
+    }
+
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
     ],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
 }
 
 if DEBUG:
-    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ]
-else:
-    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
-        "rest_framework.authentication.TokenAuthentication",
-    ]
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"].append(
+        "rest_framework.authentication.SessionAuthentication"
+    )
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+        "rest_framework.renderers.BrowsableAPIRenderer"
+    )
 
-if DEBUG:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ]
-else:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
-        "rest_framework.renderers.JSONRenderer",
-    ]
-
-SPECTACULAR_SETTINGS = {
-    "TITLE": "Todo App Project with Django REST Framework and React",
-    "DESCRIPTION": "This is a sample Todo application built for learning purposes using Django REST Framework on the backend and React on the frontend.",
-    "VERSION": "1.0.0",
-}
+if GENERATE_SCHEMA:
+    REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
 
 
 MIDDLEWARE = [
