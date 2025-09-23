@@ -7,7 +7,7 @@ info:
 paths:
   /api/v1/dj-rest-auth/login/:
     post:
-      operationId: dj_rest_auth_login_create
+      operationId: v1_dj_rest_auth_login_create
       description: |-
         Check the credentials and return the REST Token
         if the credentials are valid and authenticated.
@@ -17,7 +17,7 @@ paths:
         Accept the following POST parameters: username, password
         Return the REST Framework Token Object's key.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -42,14 +42,14 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/logout/:
     post:
-      operationId: dj_rest_auth_logout_create
+      operationId: v1_dj_rest_auth_logout_create
       description: |-
         Calls Django logout method and delete the Token object
         assigned to the current User object.
 
         Accepts/Returns nothing.
       tags:
-      - dj-rest-auth
+      - v1
       security:
       - tokenAuth: []
       - {}
@@ -62,14 +62,14 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/password/change/:
     post:
-      operationId: dj_rest_auth_password_change_create
+      operationId: v1_dj_rest_auth_password_change_create
       description: |-
         Calls Django Auth SetPasswordForm save method.
 
         Accepts the following POST parameters: new_password1, new_password2
         Returns the success/fail message.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -93,14 +93,14 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/password/reset/:
     post:
-      operationId: dj_rest_auth_password_reset_create
+      operationId: v1_dj_rest_auth_password_reset_create
       description: |-
         Calls Django Auth PasswordResetForm save method.
 
         Accepts the following POST parameters: email
         Returns the success/fail message.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -125,7 +125,7 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/password/reset/confirm/:
     post:
-      operationId: dj_rest_auth_password_reset_confirm_create
+      operationId: v1_dj_rest_auth_password_reset_confirm_create
       description: |-
         Password reset e-mail link is confirmed, therefore
         this resets the user's password.
@@ -134,7 +134,7 @@ paths:
             new_password1, new_password2
         Returns the success/fail message.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -159,13 +159,13 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/registration/:
     post:
-      operationId: dj_rest_auth_registration_create
+      operationId: v1_dj_rest_auth_registration_create
       description: |-
         Registers a new user.
 
         Accepts the following POST parameters: username, email, password1, password2.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -190,13 +190,13 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/registration/resend-email/:
     post:
-      operationId: dj_rest_auth_registration_resend_email_create
+      operationId: v1_dj_rest_auth_registration_resend_email_create
       description: |-
         Resends another email to an unverified email.
 
         Accepts the following POST parameter: email.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -220,13 +220,13 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/registration/verify-email/:
     post:
-      operationId: dj_rest_auth_registration_verify_email_create
+      operationId: v1_dj_rest_auth_registration_verify_email_create
       description: |-
         Verifies the email associated with the provided key.
 
         Accepts the following POST parameter: key.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -251,7 +251,7 @@ paths:
           description: ''
   /api/v1/dj-rest-auth/user/:
     get:
-      operationId: dj_rest_auth_user_retrieve
+      operationId: v1_dj_rest_auth_user_retrieve
       description: |-
         Reads and updates UserModel fields
         Accepts GET, PUT, PATCH methods.
@@ -262,7 +262,7 @@ paths:
 
         Returns UserModel fields.
       tags:
-      - dj-rest-auth
+      - v1
       security:
       - tokenAuth: []
       responses:
@@ -273,7 +273,7 @@ paths:
                 $ref: '#/components/schemas/UserDetails'
           description: ''
     put:
-      operationId: dj_rest_auth_user_update
+      operationId: v1_dj_rest_auth_user_update
       description: |-
         Reads and updates UserModel fields
         Accepts GET, PUT, PATCH methods.
@@ -284,7 +284,7 @@ paths:
 
         Returns UserModel fields.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -307,7 +307,7 @@ paths:
                 $ref: '#/components/schemas/UserDetails'
           description: ''
     patch:
-      operationId: dj_rest_auth_user_partial_update
+      operationId: v1_dj_rest_auth_user_partial_update
       description: |-
         Reads and updates UserModel fields
         Accepts GET, PUT, PATCH methods.
@@ -318,7 +318,7 @@ paths:
 
         Returns UserModel fields.
       tags:
-      - dj-rest-auth
+      - v1
       requestBody:
         content:
           application/json:
@@ -339,11 +339,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserDetails'
           description: ''
-  /api/v1/todos/:
+  /api/v2/todos/:
     get:
-      operationId: todos_list
+      operationId: v2_todos_list
       tags:
-      - todos
+      - v2
       security:
       - tokenAuth: []
       responses:
@@ -356,9 +356,9 @@ paths:
                   $ref: '#/components/schemas/Todo'
           description: ''
     post:
-      operationId: todos_create
+      operationId: v2_todos_create
       tags:
-      - todos
+      - v2
       requestBody:
         content:
           application/json:
@@ -380,9 +380,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Todo'
           description: ''
-  /api/v1/todos/{id}/:
+  /api/v2/todos/{id}/:
     get:
-      operationId: todos_retrieve
+      operationId: v2_todos_retrieve
       parameters:
       - in: path
         name: id
@@ -390,7 +390,7 @@ paths:
           type: integer
         required: true
       tags:
-      - todos
+      - v2
       security:
       - tokenAuth: []
       responses:
@@ -401,7 +401,7 @@ paths:
                 $ref: '#/components/schemas/Todo'
           description: ''
     put:
-      operationId: todos_update
+      operationId: v2_todos_update
       parameters:
       - in: path
         name: id
@@ -409,7 +409,7 @@ paths:
           type: integer
         required: true
       tags:
-      - todos
+      - v2
       requestBody:
         content:
           application/json:
@@ -432,7 +432,7 @@ paths:
                 $ref: '#/components/schemas/Todo'
           description: ''
     patch:
-      operationId: todos_partial_update
+      operationId: v2_todos_partial_update
       parameters:
       - in: path
         name: id
@@ -440,7 +440,7 @@ paths:
           type: integer
         required: true
       tags:
-      - todos
+      - v2
       requestBody:
         content:
           application/json:
@@ -462,7 +462,7 @@ paths:
                 $ref: '#/components/schemas/Todo'
           description: ''
     delete:
-      operationId: todos_destroy
+      operationId: v2_todos_destroy
       parameters:
       - in: path
         name: id
@@ -470,15 +470,15 @@ paths:
           type: integer
         required: true
       tags:
-      - todos
+      - v2
       security:
       - tokenAuth: []
       responses:
         '204':
           description: No response body
-  /api/v1/todos/{id}/complete/:
+  /api/v2/todos/{id}/complete/:
     put:
-      operationId: todos_complete_update
+      operationId: v2_todos_complete_update
       parameters:
       - in: path
         name: id
@@ -486,7 +486,7 @@ paths:
           type: integer
         required: true
       tags:
-      - todos
+      - v2
       requestBody:
         content:
           application/json:
@@ -508,7 +508,7 @@ paths:
                 $ref: '#/components/schemas/TodoToggleComplete'
           description: ''
     patch:
-      operationId: todos_complete_partial_update
+      operationId: v2_todos_complete_partial_update
       parameters:
       - in: path
         name: id
@@ -516,7 +516,7 @@ paths:
           type: integer
         required: true
       tags:
-      - todos
+      - v2
       requestBody:
         content:
           application/json:

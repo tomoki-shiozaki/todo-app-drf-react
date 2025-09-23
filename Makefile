@@ -17,7 +17,7 @@ run-backend:
 
 # OpenAPI schema を生成
 generate-schema:
-    cd backend && DEBUG=False GENERATE_SCHEMA=True $(VENV) manage.py spectacular --file schema.yml
+	cd backend && DEBUG=False GENERATE_SCHEMA=True $(VENV) manage.py spectacular --file schema.yml
 
 # Django backend のテストを実行
 # --cov=apps          : apps/ ディレクトリ以下のコードのカバレッジを測定
