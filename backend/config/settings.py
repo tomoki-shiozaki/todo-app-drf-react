@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     "apps.todo.apps.TodoConfig",
 ]
 
-if DEBUG:
+GENERATE_SCHEMA = env.bool("GENERATE_SCHEMA", default=False)
+
+if GENERATE_SCHEMA:
     INSTALLED_APPS += [
         "drf_spectacular",
     ]
@@ -71,33 +73,25 @@ if DEBUG:
     }
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
     ],
 }
 
 if DEBUG:
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"].append(
+        "rest_framework.authentication.SessionAuthentication"
+    )
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+        "rest_framework.renderers.BrowsableAPIRenderer"
+    )
+
+if GENERATE_SCHEMA:
     REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
-
-if DEBUG:
-    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ]
-else:
-    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
-        "rest_framework.authentication.TokenAuthentication",
-    ]
-
-if DEBUG:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ]
-else:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
-        "rest_framework.renderers.JSONRenderer",
-    ]
 
 
 MIDDLEWARE = [
