@@ -36,7 +36,7 @@ install-frontend:
 
 # 開発サーバー起動
 run-frontend:
-	cd frontend && npm run start
+	cd frontend && npm run dev
 
 # API クライアント生成
 generate-api:

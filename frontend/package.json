@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
     "generate:api": "npx openapi-typescript-codegen --input ../backend/schema.yml --output src/api"
   },
   "dependencies": {
