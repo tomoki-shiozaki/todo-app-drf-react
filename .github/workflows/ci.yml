@@ -39,7 +39,7 @@ jobs:
           path: backend/schema.yml
 
       - name: Verify schema.yml is up-to-date
-        run: git diff --exit-code backend/schema.yml
+        run: git diff --exit-code backend/schema.yml || (echo "❌ schema.yml is not up-to-date. Run 'make generate-schema' and commit the result." && exit 1)
 
       # --- Frontend API client check ---
       - name: Setup Node.js
@@ -54,7 +54,7 @@ jobs:
         run: cd frontend && npm run generate:api
 
       - name: Verify API client is up-to-date
-        run: git diff --exit-code frontend/src/api
+        run: git diff --exit-code frontend/src/api || (echo "❌ API client is not up-to-date. Run 'make generate-api' and commit the result." && exit 1)
 
   test-and-coverage:
     runs-on: ubuntu-latest
