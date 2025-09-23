@@ -1,6 +1,7 @@
 # todo-app-drf-react
 
 [![Build Status](https://github.com/tomoki-shiozaki/todo-app-drf-react/actions/workflows/ci.yml/badge.svg)](https://github.com/tomoki-shiozaki/todo-app-drf-react/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/tomoki-shiozaki/todo-app-drf-react/graph/badge.svg?token=YHDVS0HYE1)](https://codecov.io/gh/tomoki-shiozaki/todo-app-drf-react)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 概要と注意事項
