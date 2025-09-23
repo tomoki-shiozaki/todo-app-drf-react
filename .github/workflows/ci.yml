@@ -54,3 +54,35 @@ jobs:
 
       - name: Verify API client is up-to-date
         run: git diff --exit-code frontend/src/api
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Backend coverage ---
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - run: cd backend && pip install -r requirements.txt
+      - run: cd backend && pytest --cov=. --cov-report=xml
+
+      # --- Frontend coverage ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: cd frontend && npm ci
+      - run: cd frontend && npm run test -- --coverage --coverageReporters=lcov
+
+      # --- Upload to Codecov ---
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: |
+            backend/coverage.xml
+            frontend/coverage/lcov.info
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }} # public repoなら不要
