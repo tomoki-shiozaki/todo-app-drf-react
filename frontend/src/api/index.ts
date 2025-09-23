@@ -23,5 +23,5 @@ export type { Token } from './models/Token';
 export type { UserDetails } from './models/UserDetails';
 export type { VerifyEmail } from './models/VerifyEmail';
 
-export { DjRestAuthService } from './services/DjRestAuthService';
-export { TodosService } from './services/TodosService';
+export { V1Service } from './services/V1Service';
+export { V2Service } from './services/V2Service';

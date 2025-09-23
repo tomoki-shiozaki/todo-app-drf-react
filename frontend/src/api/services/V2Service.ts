@@ -9,15 +9,15 @@ import type { TodoToggleComplete } from '../models/TodoToggleComplete';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class TodosService {
+export class V2Service {
     /**
      * @returns Todo
      * @throws ApiError
      */
-    public static todosList(): CancelablePromise<Array<Todo>> {
+    public static v2TodosList(): CancelablePromise<Array<Todo>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/todos/',
+            url: '/api/v2/todos/',
         });
     }
     /**
@@ -25,12 +25,12 @@ export class TodosService {
      * @returns Todo
      * @throws ApiError
      */
-    public static todosCreate(
+    public static v2TodosCreate(
         requestBody: Todo,
     ): CancelablePromise<Todo> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/todos/',
+            url: '/api/v2/todos/',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -40,12 +40,12 @@ export class TodosService {
      * @returns Todo
      * @throws ApiError
      */
-    public static todosRetrieve(
+    public static v2TodosRetrieve(
         id: number,
     ): CancelablePromise<Todo> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/todos/{id}/',
+            url: '/api/v2/todos/{id}/',
             path: {
                 'id': id,
             },
@@ -57,13 +57,13 @@ export class TodosService {
      * @returns Todo
      * @throws ApiError
      */
-    public static todosUpdate(
+    public static v2TodosUpdate(
         id: number,
         requestBody: Todo,
     ): CancelablePromise<Todo> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/todos/{id}/',
+            url: '/api/v2/todos/{id}/',
             path: {
                 'id': id,
             },
@@ -77,13 +77,13 @@ export class TodosService {
      * @returns Todo
      * @throws ApiError
      */
-    public static todosPartialUpdate(
+    public static v2TodosPartialUpdate(
         id: number,
         requestBody?: PatchedTodo,
     ): CancelablePromise<Todo> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/v1/todos/{id}/',
+            url: '/api/v2/todos/{id}/',
             path: {
                 'id': id,
             },
@@ -96,12 +96,12 @@ export class TodosService {
      * @returns void
      * @throws ApiError
      */
-    public static todosDestroy(
+    public static v2TodosDestroy(
         id: number,
     ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/todos/{id}/',
+            url: '/api/v2/todos/{id}/',
             path: {
                 'id': id,
             },
@@ -113,13 +113,13 @@ export class TodosService {
      * @returns TodoToggleComplete
      * @throws ApiError
      */
-    public static todosCompleteUpdate(
+    public static v2TodosCompleteUpdate(
         id: number,
         requestBody?: TodoToggleComplete,
     ): CancelablePromise<TodoToggleComplete> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/todos/{id}/complete/',
+            url: '/api/v2/todos/{id}/complete/',
             path: {
                 'id': id,
             },
@@ -133,13 +133,13 @@ export class TodosService {
      * @returns TodoToggleComplete
      * @throws ApiError
      */
-    public static todosCompletePartialUpdate(
+    public static v2TodosCompletePartialUpdate(
         id: number,
         requestBody?: PatchedTodoToggleComplete,
     ): CancelablePromise<TodoToggleComplete> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/v1/todos/{id}/complete/',
+            url: '/api/v2/todos/{id}/complete/',
             path: {
                 'id': id,
             },
