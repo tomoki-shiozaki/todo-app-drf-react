@@ -9,6 +9,9 @@ on:
 jobs:
   check-openapi:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: "False"
     strategy:
       matrix:
         python-version: [3.12, 3.13]
@@ -23,10 +26,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Python dependencies
-        run: cd backend && pip install -r requirements.txt
-
-      - name: Set environment variable SECRET_KEY
-        run: echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+        run: cd backend && pip install -r requirements/dev.txt
 
       - name: Generate OpenAPI schema
         run: cd backend && python manage.py spectacular --file schema.yml
@@ -54,3 +54,37 @@ jobs:
 
       - name: Verify API client is up-to-date
         run: git diff --exit-code frontend/src/api
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: "False"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Backend coverage ---
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - run: cd backend && pip install -r requirements/dev.txt
+      - run: cd backend && pytest --cov=apps --cov-report=xml:coverage.xml
+
+      # --- Frontend coverage ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: cd frontend && npm ci
+      - run: cd frontend && npx vitest run --coverage
+
+      # --- Upload to Codecov ---
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: |
+            backend/coverage.xml
+            frontend/coverage/lcov.info
+          fail_ci_if_error: true
