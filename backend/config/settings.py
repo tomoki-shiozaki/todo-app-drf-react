@@ -53,12 +53,16 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    "drf_spectacular",
     # Local
     "apps.accounts.apps.AccountsConfig",
     "apps.api.apps.ApiConfig",
     "apps.todo.apps.TodoConfig",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += [
+        "drf_spectacular",
+    ]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
