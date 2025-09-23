@@ -16,7 +16,7 @@ import type { VerifyEmail } from '../models/VerifyEmail';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class V1Service {
+export class DjRestAuthService {
     /**
      * Check the credentials and return the REST Token
      * if the credentials are valid and authenticated.
@@ -29,7 +29,7 @@ export class V1Service {
      * @returns Token
      * @throws ApiError
      */
-    public static v1DjRestAuthLoginCreate(
+    public static djRestAuthLoginCreate(
         requestBody: Login,
     ): CancelablePromise<Token> {
         return __request(OpenAPI, {
@@ -47,7 +47,7 @@ export class V1Service {
      * @returns RestAuthDetail
      * @throws ApiError
      */
-    public static v1DjRestAuthLogoutCreate(): CancelablePromise<RestAuthDetail> {
+    public static djRestAuthLogoutCreate(): CancelablePromise<RestAuthDetail> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/dj-rest-auth/logout/',
@@ -62,7 +62,7 @@ export class V1Service {
      * @returns RestAuthDetail
      * @throws ApiError
      */
-    public static v1DjRestAuthPasswordChangeCreate(
+    public static djRestAuthPasswordChangeCreate(
         requestBody: PasswordChange,
     ): CancelablePromise<RestAuthDetail> {
         return __request(OpenAPI, {
@@ -81,7 +81,7 @@ export class V1Service {
      * @returns RestAuthDetail
      * @throws ApiError
      */
-    public static v1DjRestAuthPasswordResetCreate(
+    public static djRestAuthPasswordResetCreate(
         requestBody: PasswordReset,
     ): CancelablePromise<RestAuthDetail> {
         return __request(OpenAPI, {
@@ -102,7 +102,7 @@ export class V1Service {
      * @returns RestAuthDetail
      * @throws ApiError
      */
-    public static v1DjRestAuthPasswordResetConfirmCreate(
+    public static djRestAuthPasswordResetConfirmCreate(
         requestBody: PasswordResetConfirm,
     ): CancelablePromise<RestAuthDetail> {
         return __request(OpenAPI, {
@@ -120,7 +120,7 @@ export class V1Service {
      * @returns Token
      * @throws ApiError
      */
-    public static v1DjRestAuthRegistrationCreate(
+    public static djRestAuthRegistrationCreate(
         requestBody: Register,
     ): CancelablePromise<Token> {
         return __request(OpenAPI, {
@@ -138,7 +138,7 @@ export class V1Service {
      * @returns RestAuthDetail
      * @throws ApiError
      */
-    public static v1DjRestAuthRegistrationResendEmailCreate(
+    public static djRestAuthRegistrationResendEmailCreate(
         requestBody?: ResendEmailVerification,
     ): CancelablePromise<RestAuthDetail> {
         return __request(OpenAPI, {
@@ -156,7 +156,7 @@ export class V1Service {
      * @returns RestAuthDetail
      * @throws ApiError
      */
-    public static v1DjRestAuthRegistrationVerifyEmailCreate(
+    public static djRestAuthRegistrationVerifyEmailCreate(
         requestBody: VerifyEmail,
     ): CancelablePromise<RestAuthDetail> {
         return __request(OpenAPI, {
@@ -178,7 +178,7 @@ export class V1Service {
      * @returns UserDetails
      * @throws ApiError
      */
-    public static v1DjRestAuthUserRetrieve(): CancelablePromise<UserDetails> {
+    public static djRestAuthUserRetrieve(): CancelablePromise<UserDetails> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/dj-rest-auth/user/',
@@ -197,7 +197,7 @@ export class V1Service {
      * @returns UserDetails
      * @throws ApiError
      */
-    public static v1DjRestAuthUserUpdate(
+    public static djRestAuthUserUpdate(
         requestBody: UserDetails,
     ): CancelablePromise<UserDetails> {
         return __request(OpenAPI, {
@@ -220,7 +220,7 @@ export class V1Service {
      * @returns UserDetails
      * @throws ApiError
      */
-    public static v1DjRestAuthUserPartialUpdate(
+    public static djRestAuthUserPartialUpdate(
         requestBody?: PatchedUserDetails,
     ): CancelablePromise<UserDetails> {
         return __request(OpenAPI, {
