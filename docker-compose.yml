@@ -1,15 +1,15 @@
 services:
   backend:
     build:
-      context: .
-      dockerfile: docker/backend/Dockerfile.dev
+      context: ./backend
+      dockerfile: Dockerfile.dev
     env_file:
       - .env.docker
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
-    entrypoint: ["/entrypoint.sh"]
+      - ./backend:/app # 開発用ホットリロード
+    entrypoint: ["/app/entrypoint.sh"]
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - db
