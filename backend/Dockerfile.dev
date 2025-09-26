@@ -13,14 +13,13 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements to leverage Docker caching
-COPY backend/requirements requirements
+COPY requirements requirements
 
 # Install dependencies
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements/dev.txt
 
 # Copy project
-COPY backend/ .
+COPY . .
 
 # Copy entrypoint.sh to a fixed location
-COPY docker/backend/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
