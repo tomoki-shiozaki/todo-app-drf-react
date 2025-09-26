@@ -1,8 +1,13 @@
 # 仮想環境ディレクトリ
 .venv/
 
+# Node.js モジュール
+node_modules/
+
 # 環境変数ファイル
 .env
+.env.venv
+.env.docker
 
 # Python キャッシュファイル
 __pycache__/
@@ -29,5 +34,3 @@ htmlcov/
 # メモ
 memo/
 
-# 空の staticfiles ディレクトリ（開発時の警告回避用）
-staticfiles/
