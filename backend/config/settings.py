@@ -16,8 +16,8 @@ from pathlib import Path
 from environs import Env
 
 env = Env()
-# settings.py は backend/config/ にあるので、dirname 1回で backend/ を取得
-backend_dir = os.path.dirname(os.path.abspath(__file__))
+config_dir = os.path.dirname(os.path.abspath(__file__))  # backend/config/
+backend_dir = os.path.dirname(config_dir)  # backend/
 # ENV_FILE が指定されていればそれを使い、なければ backend/.env.venv を読む
 env_file = os.getenv("ENV_FILE", os.path.join(backend_dir, ".env.venv"))
 env.read_env(env_file)
