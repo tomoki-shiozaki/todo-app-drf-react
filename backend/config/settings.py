@@ -16,11 +16,13 @@ from pathlib import Path
 from environs import Env
 
 env = Env()
-config_dir = os.path.dirname(os.path.abspath(__file__))  # backend/config/
-backend_dir = os.path.dirname(config_dir)  # backend/
+config_dir = Path(__file__).resolve().parent
+backend_dir = config_dir.parent
 # ENV_FILE が指定されていればそれを使い、なければ backend/.env.venv を読む
-env_file = os.getenv("ENV_FILE", os.path.join(backend_dir, ".env.venv"))
+default_env_file = backend_dir / ".env.venv"
+env_file = env.str("ENV_FILE", default=str(default_env_file))
 env.read_env(env_file)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
