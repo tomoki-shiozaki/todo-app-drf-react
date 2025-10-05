@@ -10,12 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 from environs import Env
 
 env = Env()
-env.read_env()
+config_dir = Path(__file__).resolve().parent
+backend_dir = config_dir.parent
+# ENV_FILE が指定されていればそれを使い、なければ backend/.env.venv を読む
+default_env_file = backend_dir / ".env.venv"
+env_file = env.str("ENV_FILE", default=str(default_env_file))
+env.read_env(env_file)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
