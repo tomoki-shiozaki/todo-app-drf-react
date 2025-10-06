@@ -8,6 +8,9 @@ import App from "./App.tsx";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+// OpenAPI 初期設定
+import "./services/setupApiClient";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
