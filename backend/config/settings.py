@@ -116,7 +116,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ORIGIN_WHITELIST = env.list(
-    "CORS_ORIGIN_WHITELIST", default=["http://localhost:3000"]
+    "CORS_ORIGIN_WHITELIST", default=["http://localhost:5173"]
 )
 
 ROOT_URLCONF = "config.urls"

@@ -114,6 +114,11 @@ test-frontend:
 dev:
 	make -j2 run-backend run-frontend
 
+# Docker環境でバックエンド起動＋フロントエンドを並行起動
+docker-dev:
+	make up
+	make run-frontend
+
 # Schema と API クライアントをまとめて更新
 update-api: generate-schema generate-api
 
