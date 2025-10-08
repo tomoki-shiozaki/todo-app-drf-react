@@ -29,17 +29,11 @@ jobs:
       - name: Install Python dependencies
         run: cd backend && pip install -r requirements/dev.txt
 
-      - name: Generate OpenAPI schema
-        run: cd backend && python manage.py spectacular --file schema.yml
+      - name: Generate OpenAPI schema (JSON)
+        run: cd backend && python manage.py spectacular --format openapi-json --file schema.json
 
-      - name: Upload schema.yml
-        uses: actions/upload-artifact@v4
-        with:
-          name: schema-${{ matrix.python-version }}
-          path: backend/schema.yml
-
-      - name: Verify schema.yml is up-to-date
-        run: git diff --exit-code backend/schema.yml || (echo "❌ schema.yml is not up-to-date. Run 'make generate-schema' and commit the result." && exit 1)
+      - name: Verify schema.json is up-to-date
+        run: git diff --exit-code backend/schema.json || (echo "❌ schema.json is not up-to-date. Run 'make generate-schema-json' and commit the result." && exit 1)
 
       # --- Frontend API client check ---
       - name: Setup Node.js
@@ -71,6 +65,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
+
       - run: cd backend && pip install -r requirements/dev.txt
       - run: cd backend && pytest --cov=apps --cov-report=xml:coverage.xml
 
@@ -79,6 +74,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+
       - run: cd frontend && npm ci
       - run: cd frontend && npx vitest run --coverage
 
