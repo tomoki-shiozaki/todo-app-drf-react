@@ -2,18 +2,20 @@ import apiClient from "./apiClient";
 import type { paths } from "../types/api"; // openapi-typescript で生成された型
 
 // 型の抽出
-type LoginRequest = NonNullable<
-  paths["/api/v1/dj-rest-auth/login/"]["post"]["requestBody"]
->["content"]["application/json"];
+type LoginRequest =
+  paths["/api/v1/dj-rest-auth/login/"]["post"]["requestBody"]["content"]["application/json"];
 
 type LoginResponse =
   paths["/api/v1/dj-rest-auth/login/"]["post"]["responses"]["200"]["content"]["application/json"];
+
+type LogoutResponse =
+  paths["/api/v1/dj-rest-auth/logout/"]["post"]["responses"]["200"]["content"]["application/json"];
 
 class AuthService {
   async login(data: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await apiClient.post<LoginResponse>(
-        "/api/v1/dj-rest-auth/login/",
+        "/dj-rest-auth/login/",
         data
       );
       return response.data;
@@ -23,11 +25,11 @@ class AuthService {
     }
   }
 
-  async logout(token) {
+  async logout(token: string): Promise<LogoutResponse> {
     try {
-      const response = await apiClient.post(
+      const response = await apiClient.post<LogoutResponse>(
         "/dj-rest-auth/logout/",
-        {},
+        {}, // requestBodyはないけどaxiosのpostは第2引数が必要なので空オブジェクト
         {
           headers: {
             Authorization: token ? `Token ${token}` : "",
