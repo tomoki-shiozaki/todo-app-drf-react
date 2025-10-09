@@ -11,6 +11,12 @@ type LoginResponse =
 type LogoutResponse =
   paths["/api/v1/dj-rest-auth/logout/"]["post"]["responses"]["200"]["content"]["application/json"];
 
+type SignupRequest =
+  paths["/api/v1/dj-rest-auth/registration/"]["post"]["requestBody"]["content"]["application/json"];
+
+type SignupResponse =
+  paths["/api/v1/dj-rest-auth/registration/"]["post"]["responses"]["201"]["content"]["application/json"];
+
 class AuthService {
   async login(data: LoginRequest): Promise<LoginResponse> {
     try {
@@ -43,9 +49,9 @@ class AuthService {
     }
   }
 
-  async signup(data) {
+  async signup(data: SignupRequest): Promise<SignupResponse> {
     try {
-      const response = await apiClient.post(
+      const response = await apiClient.post<SignupResponse>(
         "/dj-rest-auth/registration/",
         data
       );
