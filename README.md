@@ -46,6 +46,6 @@
 現在、アプリの基本的な機能（ToDo 管理機能）は完成していますが、今後以下の改善を行う予定です：
 
 - **TypeScript への移行**：フロントエンド部分のコードを TypeScript に移行する。  
-  その際、`openapi-typescript-codegen`を使って型と API クライアントを自動生成する。
+  その際、`openapi-typescript`を使って型を自動生成する。
 - **フロントエンドのテスト**：Vitest や React Testing Library を使用して、アプリのユニットテストおよび統合テストを実施する。
 - **JWT 認証の導入**：現在のトークン認証を JWT（JSON Web Token）を使用したものに切り替える。
