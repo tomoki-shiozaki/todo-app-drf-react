@@ -15,15 +15,26 @@ install-backend:
 run-backend:
 	cd backend && $(VENV) manage.py runserver
 
-# OpenAPI schema を生成
-generate-schema:
-	cd backend && DEBUG=False GENERATE_SCHEMA=True $(VENV) manage.py spectacular --file schema.yml
-
 # Django backend のテストを実行
 # --cov=apps          : apps/ ディレクトリ以下のコードのカバレッジを測定
 # --cov-report=term-missing : ターミナルにカバレッジ結果を出力し、さらに "どの行が未カバーか" を表示する
 test-backend:
 	cd backend && $(VENV) -m pytest --cov=apps --cov-report=term-missing
+
+# ============================
+# OpenAPI Schema Generation
+# ============================
+
+generate-schema-yaml:
+	cd backend && DEBUG=False GENERATE_SCHEMA=True $(VENV) manage.py spectacular --file schema.yml
+	@echo "✅ Generated OpenAPI schema: backend/schema.yml"
+
+generate-schema-json:
+	cd backend && DEBUG=False GENERATE_SCHEMA=True $(VENV) manage.py spectacular --format openapi-json --file schema.json
+	@echo "✅ Generated OpenAPI schema: backend/schema.json"
+
+generate-schema: generate-schema-yaml generate-schema-json
+	@echo "✅ All OpenAPI schemas generated."
 
 # ==============================
 # Docker / Backend
@@ -70,21 +81,34 @@ run:
 prune:
 	docker system prune -a --volumes -f
 
-# Docker 上で schema を生成
-docker-generate-schema:
-	docker compose run --rm backend \
-	DEBUG=False GENERATE_SCHEMA=True python manage.py spectacular --file schema.yml
-
-docker-generate-schema-exec:
-	docker compose exec backend \
-	DEBUG=False GENERATE_SCHEMA=True python manage.py spectacular --file schema.yml
-
 # その他
 docker-test-backend:
 	docker-compose run --rm backend pytest --cov=apps --cov-report=term-missing
 
 docker-shell:
 	docker-compose run --rm backend python manage.py shell
+
+# ============================
+# Docker 上で OpenAPI schema を生成
+# ============================
+
+# Docker コンテナ上で新規に schema.json を生成
+docker-generate-schema:
+	docker compose run --rm \
+	  -e DEBUG=False \
+	  -e GENERATE_SCHEMA=True \
+	  backend \
+	  python manage.py spectacular --format openapi-json --file schema.json
+	@echo "✅ Generated OpenAPI schema.json in Docker container"
+
+# Docker コンテナ上で既存の backend コンテナに対して schema.json を生成
+docker-generate-schema-exec:
+	docker compose exec \
+	  -e DEBUG=False \
+	  -e GENERATE_SCHEMA=True \
+	  backend \
+	  python manage.py spectacular --format openapi-json --file schema.json
+	@echo "✅ Generated OpenAPI schema.json in running Docker container"
 
 # ==============================
 # React / Frontend
@@ -113,6 +137,11 @@ test-frontend:
 # ローカル venv で両方の開発サーバーを並行起動
 dev:
 	make -j2 run-backend run-frontend
+
+# Docker環境でバックエンド起動＋フロントエンドを並行起動
+docker-dev:
+	make up
+	make run-frontend
 
 # Schema と API クライアントをまとめて更新
 update-api: generate-schema generate-api
