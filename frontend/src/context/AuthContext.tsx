@@ -1,19 +1,46 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import { useErrorContext } from "./ErrorContext";
 import AuthService from "../services/auth";
+import type { paths } from "../types/api"; // openapi-typescript で生成された型
+import {
+  LOCALSTORAGE_TOKEN_KEY,
+  LOCALSTORAGE_USERNAME_KEY,
+} from "../constants/storage";
 
-// Context を作成
-const AuthContext = createContext();
+// 型の抽出
+type LoginRequest =
+  paths["/api/v1/dj-rest-auth/login/"]["post"]["requestBody"]["content"]["application/json"];
+
+type SignupRequest =
+  paths["/api/v1/dj-rest-auth/registration/"]["post"]["requestBody"]["content"]["application/json"];
+
+// AuthContext で提供する値の型
+interface AuthContextType {
+  currentUsername: string | null;
+  token: string | null;
+  login: (user: LoginRequest) => Promise<void>;
+  logout: () => Promise<void>;
+  signup: (user: SignupRequest) => Promise<void>;
+}
+
+// Provider の props 型
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+// Context を作成（初期値は null にしてカスタムフックで安全に取得）
+const AuthContext = createContext<AuthContextType | null>(null);
 
 // Provider コンポーネント
-export const AuthProvider = ({ children }) => {
-  const [currentUsername, setCurrentUsername] = useState(null);
-  const [token, setToken] = useState(null);
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const { setError } = useErrorContext();
 
   useEffect(() => {
-    const savedUsername = localStorage.getItem("currentUsername");
-    const savedToken = localStorage.getItem("token");
+    const savedUsername = localStorage.getItem(LOCALSTORAGE_USERNAME_KEY);
+    const savedToken = localStorage.getItem(LOCALSTORAGE_TOKEN_KEY);
 
     if (savedUsername && savedToken) {
       setCurrentUsername(savedUsername);
@@ -21,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (user) => {
+  const login = async (user: LoginRequest): Promise<void> => {
     if (!user || !user.username || !user.password) {
       setError("Username and password are required.");
       return;
@@ -35,32 +62,34 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       setCurrentUsername(user.username);
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("currentUsername", user.username);
+      localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
+      localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
 
       setError("");
-    } catch (e) {
+    } catch (e: any) {
       console.error("login error:", e);
       const message = e.response?.data?.detail || e.message || "Login failed.";
       setError(message);
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
-      await AuthService.logout();
-    } catch (error) {
-      console.error("Logout API error:", error);
+      if (token) {
+        await AuthService.logout(token); // state から取得
+      }
+    } catch (e: unknown) {
+      console.error("Logout error:", e);
       // エラーでもトークンはクリアしたいのでcatchに処理を入れておく
     } finally {
       setCurrentUsername(null);
       setToken(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("currentUsername");
+      localStorage.removeItem(LOCALSTORAGE_TOKEN_KEY);
+      localStorage.removeItem(LOCALSTORAGE_USERNAME_KEY);
     }
   };
 
-  const signup = async (user = null) => {
+  const signup = async (user: SignupRequest): Promise<void> => {
     if (
       !user ||
       !user.username ||
@@ -87,10 +116,10 @@ export const AuthProvider = ({ children }) => {
 
       setToken(token);
       setCurrentUsername(user.username);
-      localStorage.setItem("token", token);
-      localStorage.setItem("currentUsername", user.username);
+      localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
+      localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
       setError("");
-    } catch (e) {
+    } catch (e: any) {
       console.error("signup error:", e);
 
       if (e.response && e.response.data) {
@@ -122,4 +151,9 @@ export const AuthProvider = ({ children }) => {
 };
 
 // 認証状態にアクセスするカスタムフック
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuthContext = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context)
+    throw new Error("useAuthContext must be used within an AuthProvider");
+  return context;
+};
