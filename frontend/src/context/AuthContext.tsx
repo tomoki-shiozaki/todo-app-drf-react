@@ -16,7 +16,7 @@ interface AuthContextType {
   currentUsername: string | null;
   token: string | null;
   login: (user: LoginRequest) => Promise<void>;
-  logout: (token: string) => Promise<void>;
+  logout: () => Promise<void>;
   signup: (user: SignupRequest) => Promise<void>;
 }
 
@@ -69,11 +69,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const logout = async (token: string): Promise<void> => {
+  const logout = async (): Promise<void> => {
     try {
-      await AuthService.logout(token);
-    } catch (error) {
-      console.error("Logout API error:", error);
+      if (token) {
+        await AuthService.logout(token); // state から取得
+      }
+    } catch (e: unknown) {
+      console.error("Logout error:", e);
       // エラーでもトークンはクリアしたいのでcatchに処理を入れておく
     } finally {
       setCurrentUsername(null);
