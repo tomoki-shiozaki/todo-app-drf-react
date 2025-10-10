@@ -17,6 +17,9 @@ type UpdateTodoRequest =
 type UpdateTodoResponse =
   paths["/api/v1/todos/{id}/"]["put"]["responses"]["200"]["content"]["application/json"];
 
+type CompleteTodoResponse =
+  paths["/api/v1/todos/{id}/complete/"]["put"]["responses"]["200"]["content"];
+
 class TodoDataService {
   async getAll(token: string): Promise<TodosListResponse> {
     try {
@@ -86,13 +89,20 @@ class TodoDataService {
     });
   }
 
-  async completeTodo(id, token) {
+  async completeTodo(
+    id: string | number,
+    token: string
+  ): Promise<CompleteTodoResponse> {
     try {
-      const response = await apiClient.put(`/todos/${id}/complete/`, null, {
-        headers: {
-          Authorization: token ? `Token ${token}` : "",
-        },
-      });
+      const response = await apiClient.put<CompleteTodoResponse>(
+        `/todos/${id}/complete/`,
+        null,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error completing todo:", error);
