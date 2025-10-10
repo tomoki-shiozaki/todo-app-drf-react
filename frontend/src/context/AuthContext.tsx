@@ -124,10 +124,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (e.response && e.response.data) {
         const firstError = Object.values(e.response.data)[0];
+
         if (Array.isArray(firstError)) {
-          setError(firstError[0]);
-        } else {
+          setError(String(firstError[0]));
+        } else if (typeof firstError === "string") {
           setError(firstError);
+        } else {
+          setError("不明なエラーが発生しました。");
         }
       } else {
         setError(e.message || "Signup failed.");
