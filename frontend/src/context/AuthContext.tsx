@@ -25,8 +25,8 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Context を作成（初期値は型キャストで空オブジェクトに）
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+// Context を作成（初期値は null にしてカスタムフックで安全に取得）
+const AuthContext = createContext<AuthContextType | null>(null);
 
 // Provider コンポーネント
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -145,4 +145,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 };
 
 // 認証状態にアクセスするカスタムフック
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuthContext = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context)
+    throw new Error("useAuthContext must be used within an AuthProvider");
+  return context;
+};
