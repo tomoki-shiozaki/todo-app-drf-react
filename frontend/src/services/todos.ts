@@ -4,6 +4,11 @@ import type { paths } from "../types/api"; // openapi-typescript で生成され
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
 
+type CreateTodoRequest =
+  paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
+type CreateTodoResponse =
+  paths["/api/v1/todos/"]["post"]["responses"]["201"]["content"]["application/json"];
+
 class TodoDataService {
   async getAll(token: string): Promise<TodosListResponse> {
     try {
@@ -18,13 +23,20 @@ class TodoDataService {
     }
   }
 
-  async createTodo(data, token) {
+  async createTodo(
+    data: CreateTodoRequest,
+    token: string
+  ): Promise<CreateTodoResponse> {
     try {
-      const response = await apiClient.post("/todos/", data, {
-        headers: {
-          Authorization: token ? `Token ${token}` : "",
-        },
-      });
+      const response = await apiClient.post<CreateTodoResponse>(
+        "/todos/",
+        data,
+        {
+          headers: {
+            Authorization: token ? `Token ${token}` : "",
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       throw error;
