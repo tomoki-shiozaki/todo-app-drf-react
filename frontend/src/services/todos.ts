@@ -1,9 +1,13 @@
 import apiClient from "./apiClient";
+import type { paths } from "../types/api"; // openapi-typescript で生成された型ファイル
+
+type TodosListResponse =
+  paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
 
 class TodoDataService {
-  async getAll(token) {
+  async getAll(token: string): Promise<TodosListResponse> {
     try {
-      const response = await apiClient.get("/todos/", {
+      const response = await apiClient.get<TodosListResponse>("/todos/", {
         headers: {
           Authorization: token ? `Token ${token}` : "",
         },
