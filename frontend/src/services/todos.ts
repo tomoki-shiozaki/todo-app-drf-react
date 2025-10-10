@@ -80,11 +80,10 @@ class TodoDataService {
     return response.data;
   }
 
-  async deleteTodo(id, token) {
-    const response = await apiClient.delete(`/todos/${id}/`, {
-      headers: { Authorization: token ? `Token ${token}` : "" },
+  async deleteTodo(id: string | number, token: string): Promise<void> {
+    await apiClient.delete(`/todos/${id}/`, {
+      headers: { Authorization: `Token ${token}` },
     });
-    return response.data;
   }
 
   async completeTodo(id, token) {
