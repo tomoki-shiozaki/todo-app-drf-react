@@ -9,12 +9,15 @@ type CreateTodoRequest =
 type CreateTodoResponse =
   paths["/api/v1/todos/"]["post"]["responses"]["201"]["content"]["application/json"];
 
+type GetTodoResponse =
+  paths["/api/v1/todos/{id}/"]["get"]["responses"]["200"]["content"]["application/json"];
+
 class TodoDataService {
   async getAll(token: string): Promise<TodosListResponse> {
     try {
       const response = await apiClient.get<TodosListResponse>("/todos/", {
         headers: {
-          Authorization: token ? `Token ${token}` : "",
+          Authorization: `Token ${token}`,
         },
       });
       return response.data;
@@ -33,7 +36,7 @@ class TodoDataService {
         data,
         {
           headers: {
-            Authorization: token ? `Token ${token}` : "",
+            Authorization: `Token ${token}`,
           },
         }
       );
@@ -43,9 +46,14 @@ class TodoDataService {
     }
   }
 
-  async getTodoById(id, token) {
-    const response = await apiClient.get(`/todos/${id}/`, {
-      headers: { Authorization: token ? `Token ${token}` : "" },
+  async getTodoById(
+    id: number | string,
+    token: string
+  ): Promise<GetTodoResponse> {
+    const response = await apiClient.get<GetTodoResponse>(`/todos/${id}/`, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
     });
     return response.data;
   }
