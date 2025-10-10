@@ -3,6 +3,10 @@ import type { ReactNode } from "react";
 import { useErrorContext } from "./ErrorContext";
 import AuthService from "../services/auth";
 import type { paths } from "../types/api"; // openapi-typescript で生成された型
+import {
+  LOCALSTORAGE_TOKEN_KEY,
+  LOCALSTORAGE_USERNAME_KEY,
+} from "../constants/storage";
 
 // 型の抽出
 type LoginRequest =
@@ -35,8 +39,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { setError } = useErrorContext();
 
   useEffect(() => {
-    const savedUsername = localStorage.getItem("currentUsername");
-    const savedToken = localStorage.getItem("token");
+    const savedUsername = localStorage.getItem(LOCALSTORAGE_USERNAME_KEY);
+    const savedToken = localStorage.getItem(LOCALSTORAGE_TOKEN_KEY);
 
     if (savedUsername && savedToken) {
       setCurrentUsername(savedUsername);
@@ -58,8 +62,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setToken(token);
       setCurrentUsername(user.username);
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("currentUsername", user.username);
+      localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
+      localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
 
       setError("");
     } catch (e: any) {
@@ -80,8 +84,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setCurrentUsername(null);
       setToken(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("currentUsername");
+      localStorage.removeItem(LOCALSTORAGE_TOKEN_KEY);
+      localStorage.removeItem(LOCALSTORAGE_USERNAME_KEY);
     }
   };
 
@@ -112,8 +116,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       setToken(token);
       setCurrentUsername(user.username);
-      localStorage.setItem("token", token);
-      localStorage.setItem("currentUsername", user.username);
+      localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
+      localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
       setError("");
     } catch (e: any) {
       console.error("signup error:", e);
