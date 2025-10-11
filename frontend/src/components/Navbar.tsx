@@ -26,9 +26,18 @@ const AppNavbar = () => {
 
           {currentUsername ? (
             <Nav.Item>
-              <Link className="nav-link" onClick={logout}>
+              <Nav.Link
+                as="button"
+                onClick={logout}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              >
                 Logout ({currentUsername})
-              </Link>
+              </Nav.Link>
             </Nav.Item>
           ) : (
             <>
