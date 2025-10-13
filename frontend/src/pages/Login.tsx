@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -13,10 +14,12 @@ const Login = () => {
   // Contextからlogin関数を取得
   const { login } = useAuthContext();
 
-  const onChangeUsername = (e) => setUsername(e.target.value);
-  const onChangePassword = (e) => setPassword(e.target.value);
+  const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) =>
+    setUsername(e.target.value);
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) =>
+    setPassword(e.target.value);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await login({ username, password });
     navigate("/"); // ログイン成功後にtodosへ遷移
