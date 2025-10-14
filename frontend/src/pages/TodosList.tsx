@@ -41,7 +41,7 @@ const TodosList = () => {
       return;
     }
 
-    if (!window.confirm("Are you sure you want to delete this todo?")) return;
+    if (!window.confirm("このTodoを削除してもよろしいですか？")) return;
 
     try {
       await TodoDataService.deleteTodo(id, token);
@@ -73,11 +73,11 @@ const TodosList = () => {
   };
 
   if (!token) {
-    return <p>Please log in to see your todos.</p>;
+    return <p>ログインしてください。</p>;
   }
 
   if (loading) {
-    return <p>Loading todos...</p>;
+    return <p>Todoを読み込み中です…</p>;
   }
 
   return (
@@ -90,7 +90,7 @@ const TodosList = () => {
       </div>
 
       {todos.length === 0 ? (
-        <p>No todos found. </p> // Todosがない場合のメッセージ
+        <p>Todoはありません。</p> // Todosがない場合のメッセージ
       ) : (
         todos.map((todo) => (
           <Card key={todo.id} className="mb-3">
@@ -98,9 +98,18 @@ const TodosList = () => {
               <div>
                 <Card.Title>{todo.title}</Card.Title>
                 <Card.Text>
-                  <b>Memo:</b> {todo.memo}
+                  <b>本文</b> {todo.memo}
                 </Card.Text>
-                <Card.Text>Date created: {todo.created}</Card.Text>
+                <Card.Text>
+                  作成日:{" "}
+                  {new Date(todo.created).toLocaleString("ja-JP", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Card.Text>
                 <Card.Text>
                   状態:{" "}
                   <span style={{ color: todo.completed ? "green" : "red" }}>
@@ -120,14 +129,14 @@ const TodosList = () => {
               {/* 編集ボタン */}
               <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
                 <Button variant="outline-info" className="me-2">
-                  Edit
+                  編集
                 </Button>
               </Link>
               <Button
                 variant="outline-danger"
                 onClick={() => handleDelete(todo.id)}
               >
-                Delete
+                削除
               </Button>
             </Card.Body>
           </Card>
