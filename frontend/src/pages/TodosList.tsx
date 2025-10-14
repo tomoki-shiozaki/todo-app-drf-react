@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import TodoDataService from "../services/todos";
-import { useAuthContext } from "../context/AuthContext"; // 追加！
+import { useAuthContext } from "../context/AuthContext";
+import type { paths } from "../types/api";
+
+type TodosListResponse =
+  paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
 
 const TodosList = () => {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<TodosListResponse>([]);
   const [loading, setLoading] = useState(true);
 
-  const { token } = useAuthContext(); // ここで context から token を取得！
+  const { token } = useAuthContext();
 
   useEffect(() => {
     if (!token) return;
@@ -31,7 +35,12 @@ const TodosList = () => {
     retrieveTodos();
   }, [token]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
+    if (!token) {
+      alert("ログインが必要です。");
+      return;
+    }
+
     if (!window.confirm("Are you sure you want to delete this todo?")) return;
 
     try {
@@ -43,7 +52,12 @@ const TodosList = () => {
     }
   };
 
-  const handleComplete = async (id) => {
+  const handleComplete = async (id: number) => {
+    if (!token) {
+      alert("ログインが必要です。");
+      return;
+    }
+
     try {
       await TodoDataService.completeTodo(id, token);
       // 完了トグルがサーバー側で行われるので、ローカルでも反映
@@ -104,12 +118,7 @@ const TodosList = () => {
               </Button>
 
               {/* 編集ボタン */}
-              <Link
-                to={{
-                  pathname: "/todos/" + todo.id,
-                  state: { currentTodo: todo },
-                }}
-              >
+              <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
                 <Button variant="outline-info" className="me-2">
                   Edit
                 </Button>

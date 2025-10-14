@@ -1,33 +1,41 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+type SignupFormData = {
+  username: string;
+  email: string;
+  password1: string;
+  password2: string;
+};
+
 function Signup() {
   const { signup } = useAuthContext();
-  const navigate = useNavigate(); // ← これ追加！
+  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignupFormData>({
     username: "",
     email: "",
     password1: "",
     password2: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await signup(formData);
 
     // 成功してトークンが保存されていれば、ログイン済とみなして遷移
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/todos"); // ← 好きな場所に遷移！
+      navigate("/todos");
     }
   };
 

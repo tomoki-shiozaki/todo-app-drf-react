@@ -6,6 +6,7 @@ type TodosListResponse =
 
 type CreateTodoRequest =
   paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
+type CreateTodoRequestData = Pick<CreateTodoRequest, "title" | "memo">;
 type CreateTodoResponse =
   paths["/api/v1/todos/"]["post"]["responses"]["201"]["content"]["application/json"];
 
@@ -14,6 +15,7 @@ type GetTodoResponse =
 
 type UpdateTodoRequest =
   paths["/api/v1/todos/{id}/"]["put"]["requestBody"]["content"]["application/json"];
+type UpdateTodoRequestData = Pick<UpdateTodoRequest, "title" | "memo">;
 type UpdateTodoResponse =
   paths["/api/v1/todos/{id}/"]["put"]["responses"]["200"]["content"]["application/json"];
 
@@ -35,18 +37,14 @@ class TodoDataService {
   }
 
   async createTodo(
-    data: CreateTodoRequest,
+    data: CreateTodoRequestData,
     token: string
   ): Promise<CreateTodoResponse> {
     try {
       const response = await apiClient.post<CreateTodoResponse>(
         "/todos/",
         data,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
+        { headers: { Authorization: `Token ${token}` } }
       );
       return response.data;
     } catch (error) {
@@ -54,10 +52,7 @@ class TodoDataService {
     }
   }
 
-  async getTodoById(
-    id: number | string,
-    token: string
-  ): Promise<GetTodoResponse> {
+  async getTodoById(id: string, token: string): Promise<GetTodoResponse> {
     const response = await apiClient.get<GetTodoResponse>(`/todos/${id}/`, {
       headers: {
         Authorization: `Token ${token}`,
@@ -67,8 +62,8 @@ class TodoDataService {
   }
 
   async updateTodo(
-    id: string | number,
-    data: UpdateTodoRequest,
+    id: string,
+    data: UpdateTodoRequestData,
     token: string
   ): Promise<UpdateTodoResponse> {
     const response = await apiClient.put<UpdateTodoResponse>(

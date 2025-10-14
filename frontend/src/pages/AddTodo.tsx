@@ -1,23 +1,34 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
+import type { FormEvent } from "react";
+import type { paths } from "../types/api";
+
+type CreateTodoRequest =
+  paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
+type CreateTodoRequestData = Pick<CreateTodoRequest, "title" | "memo">;
 
 function AddTodo() {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const { token } = useAuthContext();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = { title, memo };
+    if (!token) {
+      setError("認証情報がありません。再ログインしてください。");
+      return;
+    }
+
+    const data: CreateTodoRequestData = { title, memo };
 
     try {
-      const result = await TodoDataService.createTodo(data, token);
+      await TodoDataService.createTodo(data, token);
       setError(null);
       navigate("/todos");
     } catch (err) {
