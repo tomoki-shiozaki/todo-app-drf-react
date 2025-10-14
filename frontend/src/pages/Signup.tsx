@@ -41,11 +41,11 @@ function Signup() {
 
   return (
     <div className="signup-container">
-      <h2>Sign Up</h2>
+      <h2>アカウント作成</h2>
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Username:</label>
+          <label>ユーザー名：</label>
           <br />
           <input
             type="text"
@@ -56,7 +56,7 @@ function Signup() {
           />
         </div>
         <div>
-          <label>Email:</label>
+          <label>メールアドレス：</label>
           <br />
           <input
             type="email"
@@ -67,7 +67,7 @@ function Signup() {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label>パスワード：</label>
           <br />
           <input
             type="password"
@@ -78,7 +78,7 @@ function Signup() {
           />
         </div>
         <div>
-          <label>Confirm Password:</label>
+          <label>パスワード（確認用）：</label>
           <br />
           <input
             type="password"
@@ -88,7 +88,7 @@ function Signup() {
             required
           />
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit">登録</button>
       </form>
     </div>
   );
