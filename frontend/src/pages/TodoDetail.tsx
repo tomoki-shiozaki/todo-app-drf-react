@@ -3,6 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import TodoDataService from "../services/todos"; // 詳細取得、更新、削除ロジック
 import { useAuthContext } from "../context/AuthContext";
 import type { components, paths } from "../types/api";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
+import Alert from "react-bootstrap/Alert";
 
 type Todo = components["schemas"]["Todo"];
 
@@ -67,18 +72,38 @@ function TodoDetail() {
   if (!todo) return <div>読み込み中...</div>;
 
   return (
-    <div>
-      <h2>Todo詳細</h2>
-      <label>タイトル：</label>
-      <input value={title} onChange={(e) => setTitle(e.target.value)} />
-      <br />
-      <label>メモ：</label>
-      <textarea value={memo} onChange={(e) => setMemo(e.target.value)} />
-      <br />
-      <button onClick={handleUpdate}>更新</button>
-      <button onClick={handleDelete}>削除</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+    <Container className="mt-5" style={{ maxWidth: "600px" }}>
+      <Card>
+        <Card.Body>
+          <Card.Title>Todo詳細</Card.Title>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>タイトル</Form.Label>
+              <Form.Control
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>メモ</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={10}
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+              />
+            </Form.Group>
+            <Button variant="primary" className="me-2" onClick={handleUpdate}>
+              更新
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              削除
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

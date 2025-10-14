@@ -98,7 +98,7 @@ const TodosList = () => {
               <div>
                 <Card.Title>{todo.title}</Card.Title>
                 <Card.Text>
-                  <b>本文</b> {todo.memo}
+                  <b>メモ</b> {todo.memo}
                 </Card.Text>
                 <Card.Text>
                   作成日:{" "}
