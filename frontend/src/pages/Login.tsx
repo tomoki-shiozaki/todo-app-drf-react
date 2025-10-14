@@ -29,20 +29,20 @@ const Login = () => {
     <Container>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
-          <Form.Label>Username</Form.Label>
+          <Form.Label>ユーザー名</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter username"
+            placeholder="ユーザー名を入力"
             value={username}
             onChange={onChangeUsername}
             required
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>パスワード</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Enter password"
+            placeholder="パスワードを入力"
             value={password}
             onChange={onChangePassword}
             required
@@ -50,7 +50,7 @@ const Login = () => {
         </Form.Group>
 
         <Button variant="primary" type="submit">
-          Login
+          ログイン
         </Button>
       </Form>
     </Container>
