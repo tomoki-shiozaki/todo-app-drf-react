@@ -26,7 +26,8 @@ const Login = () => {
   };
 
   return (
-    <Container>
+    <Container className="mt-5" style={{ maxWidth: "500px" }}>
+      <h2 className="mb-4">ログイン</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>ユーザー名</Form.Label>
@@ -49,7 +50,7 @@ const Login = () => {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" className="w-100">
           ログイン
         </Button>
       </Form>
