@@ -10,7 +10,7 @@ const AppNavbar = () => {
     <Navbar bg="primary" variant="dark">
       <div className="container-fluid">
         <Navbar.Brand as={Link} to="/">
-          TodosApp
+          Todo管理アプリ
         </Navbar.Brand>
         <Nav
           className="me-auto"
@@ -20,7 +20,7 @@ const AppNavbar = () => {
         >
           <Nav.Item>
             <Nav.Link as={Link} to="/todos" eventKey="/todos">
-              Todos
+              Todo一覧
             </Nav.Link>
           </Nav.Item>
 
@@ -36,19 +36,19 @@ const AppNavbar = () => {
                   cursor: "pointer",
                 }}
               >
-                Logout ({currentUsername})
+                ログアウト ({currentUsername})
               </Nav.Link>
             </Nav.Item>
           ) : (
             <>
               <Nav.Item>
                 <Nav.Link as={Link} to="/login" eventKey="/login">
-                  Login
+                  ログイン
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link as={Link} to="/signup" eventKey="/signup">
-                  Sign Up
+                  新規登録
                 </Nav.Link>
               </Nav.Item>
             </>
