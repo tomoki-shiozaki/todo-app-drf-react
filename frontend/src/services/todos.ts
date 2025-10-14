@@ -6,6 +6,7 @@ type TodosListResponse =
 
 type CreateTodoRequest =
   paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
+type CreateTodoRequestData = Pick<CreateTodoRequest, "title" | "memo">;
 type CreateTodoResponse =
   paths["/api/v1/todos/"]["post"]["responses"]["201"]["content"]["application/json"];
 
@@ -35,18 +36,14 @@ class TodoDataService {
   }
 
   async createTodo(
-    data: CreateTodoRequest,
+    data: CreateTodoRequestData,
     token: string
   ): Promise<CreateTodoResponse> {
     try {
       const response = await apiClient.post<CreateTodoResponse>(
         "/todos/",
         data,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
+        { headers: { Authorization: `Token ${token}` } }
       );
       return response.data;
     } catch (error) {
