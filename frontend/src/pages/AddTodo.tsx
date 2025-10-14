@@ -8,6 +8,7 @@ import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { FormEvent } from "react";
 import type { paths } from "../types/api";
+import RequireAuthAlert from "../components/RequireAuthAlert";
 
 type CreateTodoRequest =
   paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
@@ -40,6 +41,8 @@ function AddTodo() {
       setError("Todoの追加に失敗しました。");
     }
   };
+
+  if (!token) return <RequireAuthAlert />;
 
   return (
     <Container className="mt-4" style={{ maxWidth: "600px" }}>
