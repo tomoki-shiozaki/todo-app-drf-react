@@ -8,6 +8,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
+import RequireAuthAlert from "../components/RequireAuthAlert";
 
 type Todo = components["schemas"]["Todo"];
 
@@ -68,6 +69,8 @@ function TodoDetail() {
       setError("削除に失敗しました。");
     }
   };
+
+  if (!token) return <RequireAuthAlert />;
 
   if (!todo) return <div>読み込み中...</div>;
 

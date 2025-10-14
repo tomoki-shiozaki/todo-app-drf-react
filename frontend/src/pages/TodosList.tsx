@@ -8,6 +8,7 @@ import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
+import RequireAuthAlert from "../components/RequireAuthAlert";
 
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -74,9 +75,7 @@ const TodosList = () => {
     }
   };
 
-  if (!token) {
-    return <Alert variant="warning">ログインしてください。</Alert>;
-  }
+  if (!token) return <RequireAuthAlert />;
 
   if (loading) {
     return (
