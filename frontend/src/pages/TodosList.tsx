@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
@@ -73,11 +75,17 @@ const TodosList = () => {
   };
 
   if (!token) {
-    return <p>ログインしてください。</p>;
+    return <Alert variant="warning">ログインしてください。</Alert>;
   }
 
   if (loading) {
-    return <p>Todoを読み込み中です…</p>;
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">読み込み中...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   return (
@@ -90,54 +98,51 @@ const TodosList = () => {
       </div>
 
       {todos.length === 0 ? (
-        <p>Todoはありません。</p> // Todosがない場合のメッセージ
+        <Alert variant="info">Todoはありません。</Alert> // Todosがない場合のメッセージ
       ) : (
         todos.map((todo) => (
           <Card key={todo.id} className="mb-3">
             <Card.Body>
-              <div>
-                <Card.Title>{todo.title}</Card.Title>
-                <Card.Text>
-                  <b>メモ</b> {todo.memo}
-                </Card.Text>
-                <Card.Text>
-                  作成日:{" "}
-                  {new Date(todo.created).toLocaleString("ja-JP", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Card.Text>
-                <Card.Text>
-                  状態:{" "}
-                  <span style={{ color: todo.completed ? "green" : "red" }}>
-                    {todo.completed ? "完了" : "未完了"}
-                  </span>
-                </Card.Text>
-              </div>
-              {/* 完了ボタン */}
-              <Button
-                variant={todo.completed ? "secondary" : "success"}
-                className="me-2"
-                onClick={() => handleComplete(todo.id)}
-              >
-                {todo.completed ? "未完了に戻す" : "完了にする"}
-              </Button>
+              <Card.Title>{todo.title}</Card.Title>
+              <Card.Text>
+                <b>メモ：</b> {todo.memo}
+              </Card.Text>
+              <Card.Text>
+                <b>作成日：</b>{" "}
+                {new Date(todo.created).toLocaleString("ja-JP", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Card.Text>
+              <Card.Text>
+                <b>状態：</b>{" "}
+                <span style={{ color: todo.completed ? "green" : "red" }}>
+                  {todo.completed ? "完了" : "未完了"}
+                </span>
+              </Card.Text>
 
-              {/* 編集ボタン */}
-              <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
-                <Button variant="outline-info" className="me-2">
-                  編集
+              <div className="d-flex flex-wrap gap-2 mt-2">
+                {/* 完了ボタン */}
+                <Button
+                  variant={todo.completed ? "secondary" : "success"}
+                  onClick={() => handleComplete(todo.id)}
+                >
+                  {todo.completed ? "未完了に戻す" : "完了にする"}
                 </Button>
-              </Link>
-              <Button
-                variant="outline-danger"
-                onClick={() => handleDelete(todo.id)}
-              >
-                削除
-              </Button>
+                {/* 編集ボタン */}
+                <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
+                  <Button variant="outline-info">編集</Button>
+                </Link>
+                <Button
+                  variant="outline-danger"
+                  onClick={() => handleDelete(todo.id)}
+                >
+                  削除
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         ))
