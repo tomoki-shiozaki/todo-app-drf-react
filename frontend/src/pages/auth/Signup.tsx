@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";

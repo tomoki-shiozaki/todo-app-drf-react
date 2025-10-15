@@ -1,8 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AddTodo, TodoDetail, TodosList } from "./pages/todos";
-import { Login } from "./pages/auth";
-import Signup from "./pages/Signup";
+import { Login, Signup } from "./pages/auth";
 
 function AppRoutes() {
   return (
