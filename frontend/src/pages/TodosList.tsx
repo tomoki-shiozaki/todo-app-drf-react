@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
 import RequireAuthAlert from "../components/RequireAuthAlert";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import Loading from "../components/Loading";
 
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -82,13 +82,7 @@ const TodosList = () => {
   if (!token) return <RequireAuthAlert />;
 
   if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">読み込み中...</span>
-        </Spinner>
-      </div>
-    );
+    return <Loading message="Todoを読み込み中..." />;
   }
 
   return (
