@@ -5,22 +5,22 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import { useAuthContext } from "../context/AuthContext";
+import Spinner from "react-bootstrap/Spinner";
+import { useAuthContext } from "../../context/AuthContext";
+import { Loading } from "../../components/common";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false); // ローディング状態
 
   const navigate = useNavigate();
-  // Contextからlogin関数を取得
   const { token, login } = useAuthContext();
 
-  // すでにログイン済みなら自動で /todos にリダイレクト
+  // すでにログイン済みなら /todos に自動リダイレクト
   useEffect(() => {
-    if (token) {
-      navigate("/todos");
-    }
+    if (token) navigate("/todos");
   }, [token, navigate]);
 
   const onChangeUsername = (e: ChangeEvent<HTMLInputElement>) =>
@@ -30,6 +30,9 @@ const Login = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     try {
       await login({ username, password });
       navigate("/todos"); // ログイン成功後
@@ -38,8 +41,14 @@ const Login = () => {
       setError(
         "ログインに失敗しました。ユーザー名とパスワードを確認してください。"
       );
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loading message="ログイン処理中..." />;
+  }
 
   return (
     <Container className="mt-5" style={{ maxWidth: "500px" }}>
@@ -56,8 +65,10 @@ const Login = () => {
             value={username}
             onChange={onChangeUsername}
             required
+            disabled={loading}
           />
         </Form.Group>
+
         <Form.Group className="mb-3">
           <Form.Label>パスワード</Form.Label>
           <Form.Control
@@ -66,11 +77,31 @@ const Login = () => {
             value={password}
             onChange={onChangePassword}
             required
+            disabled={loading}
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit" className="w-100">
-          ログイン
+        <Button
+          variant="primary"
+          type="submit"
+          className="w-100"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="me-2"
+              />
+              ログイン中...
+            </>
+          ) : (
+            "ログイン"
+          )}
         </Button>
       </Form>
     </Container>

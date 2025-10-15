@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import TodoDataService from "../services/todos"; // 詳細取得、更新、削除ロジック
-import { useAuthContext } from "../context/AuthContext";
-import type { components, paths } from "../types/api";
+import TodoDataService from "../../services/todos"; // 詳細取得、更新、削除ロジック
+import { useAuthContext } from "../../context/AuthContext";
+import type { components, paths } from "../../types/api";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import RequireAuthAlert from "../components/RequireAuthAlert";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { RequireAuthAlert } from "../../components/auth";
+import { ConfirmDeleteModal } from "../../components/todos";
 
 type Todo = components["schemas"]["Todo"];
 
