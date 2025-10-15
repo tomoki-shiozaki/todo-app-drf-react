@@ -4,11 +4,11 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import TodoDataService from "../services/todos";
-import { useAuthContext } from "../context/AuthContext";
+import TodoDataService from "../../services/todos";
+import { useAuthContext } from "../../context/AuthContext";
 import type { FormEvent } from "react";
-import type { paths } from "../types/api";
-import { RequireAuthAlert } from "../components/auth";
+import type { paths } from "../../types/api";
+import { RequireAuthAlert } from "../../components/auth";
 
 type CreateTodoRequest =
   paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
