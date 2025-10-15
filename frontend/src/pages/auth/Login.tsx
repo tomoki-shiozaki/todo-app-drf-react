@@ -6,8 +6,8 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
-import { useAuthContext } from "../context/AuthContext";
-import { Loading } from "../components/common";
+import { useAuthContext } from "../../context/AuthContext";
+import { Loading } from "../../components/common";
 
 const Login = () => {
   const [username, setUsername] = useState("");
