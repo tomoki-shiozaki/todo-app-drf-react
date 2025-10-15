@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ type SignupFormData = {
 };
 
 function Signup() {
-  const { signup } = useAuthContext();
+  const { signup, token } = useAuthContext();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<SignupFormData>({
@@ -23,6 +23,13 @@ function Signup() {
     password1: "",
     password2: "",
   });
+
+  // すでにログイン済みなら /todos にリダイレクト
+  useEffect(() => {
+    if (token) {
+      navigate("/todos");
+    }
+  }, [token, navigate]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
