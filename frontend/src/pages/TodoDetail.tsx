@@ -105,8 +105,16 @@ function TodoDetail() {
             <Button variant="primary" className="me-2" onClick={handleUpdate}>
               更新
             </Button>
-            <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+            <Button
+              variant="danger"
+              className="me-2"
+              onClick={() => setShowDeleteModal(true)}
+            >
               削除
+            </Button>
+
+            <Button variant="secondary" onClick={() => navigate("/todos")}>
+              Todo一覧へ戻る
             </Button>
           </Form>
         </Card.Body>
