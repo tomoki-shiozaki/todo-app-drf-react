@@ -4,8 +4,7 @@ import AppRoutes from "./AppRoutes";
 
 import { AuthProvider } from "./context/AuthContext";
 import { ErrorProvider } from "./context/ErrorContext";
-import AppNavbar from "./components/Navbar";
-import { ErrorAlert, Footer } from "./components/common";
+import { AppNavbar, ErrorAlert, Footer } from "./components/common";
 
 function App() {
   return (
