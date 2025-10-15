@@ -9,7 +9,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import { RequireAuthAlert } from "../components/auth";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { ConfirmDeleteModal } from "../components/todos";
 
 type Todo = components["schemas"]["Todo"];
 

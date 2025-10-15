@@ -8,7 +8,7 @@ import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
 import { RequireAuthAlert } from "../components/auth";
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { ConfirmDeleteModal } from "../components/todos";
 import Loading from "../components/Loading";
 
 type TodosListResponse =
