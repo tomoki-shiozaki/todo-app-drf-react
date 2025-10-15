@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { FormEvent } from "react";
 import type { paths } from "../types/api";
+import RequireAuthAlert from "../components/RequireAuthAlert";
 
 type CreateTodoRequest =
   paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
@@ -37,32 +42,42 @@ function AddTodo() {
     }
   };
 
+  if (!token) return <RequireAuthAlert />;
+
   return (
-    <div>
-      <h2>新しいTodoを追加</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>タイトル：</label>
-          <br />
-          <input
+    <Container className="mt-4" style={{ maxWidth: "600px" }}>
+      <h2 className="mb-4">新しいTodoを追加</h2>
+
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>タイトル</Form.Label>
+          <Form.Control
             type="text"
+            placeholder="タイトルを入力"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-        </div>
+        </Form.Group>
 
-        <div>
-          <label>メモ：</label>
-          <br />
-          <textarea value={memo} onChange={(e) => setMemo(e.target.value)} />
-        </div>
+        <Form.Group className="mb-3">
+          <Form.Label>メモ</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={10}
+            placeholder="メモを入力"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+          />
+        </Form.Group>
 
-        <button type="submit">追加</button>
-      </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
+        <Button variant="primary" type="submit">
+          追加
+        </Button>
+      </Form>
+    </Container>
   );
 }
 

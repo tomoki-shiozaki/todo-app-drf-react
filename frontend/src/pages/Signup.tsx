@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 
 type SignupFormData = {
   username: string;
@@ -11,7 +14,7 @@ type SignupFormData = {
 };
 
 function Signup() {
-  const { signup } = useAuthContext();
+  const { signup, token } = useAuthContext();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<SignupFormData>({
@@ -20,6 +23,13 @@ function Signup() {
     password1: "",
     password2: "",
   });
+
+  // すでにログイン済みなら /todos にリダイレクト
+  useEffect(() => {
+    if (token) {
+      navigate("/todos");
+    }
+  }, [token, navigate]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -40,57 +50,62 @@ function Signup() {
   };
 
   return (
-    <div className="signup-container">
-      <h2>Sign Up</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username:</label>
-          <br />
-          <input
+    <Container className="mt-5" style={{ maxWidth: "500px" }}>
+      <h2 className="mb-4">アカウント作成</h2>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>ユーザー名</Form.Label>
+          <Form.Control
             type="text"
             name="username"
+            placeholder="ユーザー名を入力"
             value={formData.username}
             onChange={handleChange}
             required
           />
-        </div>
-        <div>
-          <label>Email:</label>
-          <br />
-          <input
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>メールアドレス</Form.Label>
+          <Form.Control
             type="email"
             name="email"
+            placeholder="メールアドレスを入力"
             value={formData.email}
             onChange={handleChange}
             required
           />
-        </div>
-        <div>
-          <label>Password:</label>
-          <br />
-          <input
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>パスワード</Form.Label>
+          <Form.Control
             type="password"
             name="password1"
+            placeholder="パスワードを入力"
             value={formData.password1}
             onChange={handleChange}
             required
           />
-        </div>
-        <div>
-          <label>Confirm Password:</label>
-          <br />
-          <input
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>パスワード（確認用）</Form.Label>
+          <Form.Control
             type="password"
             name="password2"
+            placeholder="確認用パスワードを入力"
             value={formData.password2}
             onChange={handleChange}
             required
           />
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
+        </Form.Group>
+
+        <Button variant="primary" type="submit" className="w-100">
+          登録
+        </Button>
+      </Form>
+    </Container>
   );
 }
 
