@@ -4,12 +4,12 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import TodoDataService from "../services/todos";
-import { useAuthContext } from "../context/AuthContext";
-import type { paths } from "../types/api";
-import { RequireAuthAlert } from "../components/auth";
-import { ConfirmDeleteModal } from "../components/todos";
-import { Loading } from "../components/common";
+import TodoDataService from "../../services/todos";
+import { useAuthContext } from "../../context/AuthContext";
+import type { paths } from "../../types/api";
+import { RequireAuthAlert } from "../../components/auth";
+import { ConfirmDeleteModal } from "../../components/todos";
+import { Loading } from "../../components/common";
 
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];

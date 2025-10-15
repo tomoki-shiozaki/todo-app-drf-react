@@ -1,9 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { AddTodo, TodoDetail } from "./pages/todos";
+import { AddTodo, TodoDetail, TodosList } from "./pages/todos";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import TodosList from "./pages/TodosList";
 
 function AppRoutes() {
   return (
