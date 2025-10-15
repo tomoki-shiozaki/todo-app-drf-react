@@ -9,7 +9,7 @@ import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
 import { RequireAuthAlert } from "../components/auth";
 import { ConfirmDeleteModal } from "../components/todos";
-import Loading from "../components/Loading";
+import { Loading } from "../components/common";
 
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
