@@ -1,4 +1,4 @@
-import { useErrorContext } from "../context/ErrorContext";
+import { useErrorContext } from "../../context/ErrorContext";
 
 const ErrorAlert = () => {
   const { error, clearError } = useErrorContext();
