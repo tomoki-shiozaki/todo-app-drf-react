@@ -62,6 +62,8 @@ function TodoDetail() {
   const handleDelete = async () => {
     if (!id || !token) return;
 
+    if (!window.confirm("このTodoを削除してもよろしいですか？")) return;
+
     try {
       await TodoDataService.deleteTodo(id, token);
       navigate("/todos");
