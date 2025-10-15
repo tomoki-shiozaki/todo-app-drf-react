@@ -9,6 +9,7 @@ import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
 import RequireAuthAlert from "../components/RequireAuthAlert";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -16,6 +17,10 @@ type TodosListResponse =
 const TodosList = () => {
   const [todos, setTodos] = useState<TodosListResponse>([]);
   const [loading, setLoading] = useState(true);
+
+  // モーダル用のstate
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
 
   const { token } = useAuthContext();
 
@@ -38,20 +43,19 @@ const TodosList = () => {
     retrieveTodos();
   }, [token]);
 
-  const handleDelete = async (id: number) => {
-    if (!token) {
-      alert("ログインが必要です。");
-      return;
-    }
-
-    if (!window.confirm("このTodoを削除してもよろしいですか？")) return;
+  const handleDeleteConfirm = async () => {
+    if (selectedTodoId === null || !token) return;
 
     try {
-      await TodoDataService.deleteTodo(id, token);
-      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+      await TodoDataService.deleteTodo(selectedTodoId, token);
+      setTodos((prevTodos) =>
+        prevTodos.filter((todo) => todo.id !== selectedTodoId)
+      );
+      setShowDeleteModal(false);
+      setSelectedTodoId(null);
     } catch (e) {
       console.error(e);
-      alert("Failed to delete todo.");
+      alert("削除に失敗しました。");
     }
   };
 
@@ -131,13 +135,19 @@ const TodosList = () => {
                 >
                   {todo.completed ? "未完了に戻す" : "完了にする"}
                 </Button>
+
                 {/* 編集ボタン */}
                 <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
                   <Button variant="outline-info">編集</Button>
                 </Link>
+
+                {/* 削除ボタン（モーダルを開く） */}
                 <Button
                   variant="outline-danger"
-                  onClick={() => handleDelete(todo.id)}
+                  onClick={() => {
+                    setSelectedTodoId(todo.id);
+                    setShowDeleteModal(true);
+                  }}
                 >
                   削除
                 </Button>
@@ -146,6 +156,13 @@ const TodosList = () => {
           </Card>
         ))
       )}
+
+      {/* ConfirmDeleteModal */}
+      <ConfirmDeleteModal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteConfirm}
+      />
     </Container>
   );
 };
