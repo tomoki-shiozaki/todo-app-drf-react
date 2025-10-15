@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 
 type SignupFormData = {
   username: string;
@@ -24,6 +26,9 @@ function Signup() {
     password2: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   // すでにログイン済みなら /todos にリダイレクト
   useEffect(() => {
     if (token) {
@@ -40,18 +45,31 @@ function Signup() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signup(formData);
+    setLoading(true);
+    setError(null);
 
-    // 成功してトークンが保存されていれば、ログイン済とみなして遷移
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/todos");
+    try {
+      await signup(formData);
+
+      // 成功してトークンが保存されていれば、ログイン済とみなして遷移
+      const token = localStorage.getItem("token");
+      if (token) {
+        navigate("/todos");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("登録に失敗しました。入力内容を確認してください。");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container className="mt-5" style={{ maxWidth: "500px" }}>
       <h2 className="mb-4">アカウント作成</h2>
+
+      {error && <Alert variant="danger">{error}</Alert>}
+
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>ユーザー名</Form.Label>
@@ -62,6 +80,7 @@ function Signup() {
             value={formData.username}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </Form.Group>
 
@@ -74,6 +93,7 @@ function Signup() {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </Form.Group>
 
@@ -86,6 +106,7 @@ function Signup() {
             value={formData.password1}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </Form.Group>
 
@@ -98,11 +119,31 @@ function Signup() {
             value={formData.password2}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit" className="w-100">
-          登録
+        <Button
+          variant="primary"
+          type="submit"
+          className="w-100"
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+                className="me-2"
+              />
+              登録中...
+            </>
+          ) : (
+            "登録"
+          )}
         </Button>
       </Form>
     </Container>
