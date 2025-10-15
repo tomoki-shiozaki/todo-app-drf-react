@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
 import RequireAuthAlert from "../components/RequireAuthAlert";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 type Todo = components["schemas"]["Todo"];
 
@@ -25,6 +26,9 @@ function TodoDetail() {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // モーダル表示用の state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (!id) return; // id が undefined の場合は何もしない
@@ -59,21 +63,20 @@ function TodoDetail() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDeleteConfirm = async () => {
     if (!id || !token) return;
-
-    if (!window.confirm("このTodoを削除してもよろしいですか？")) return;
 
     try {
       await TodoDataService.deleteTodo(id, token);
+      setShowDeleteModal(false);
       navigate("/todos");
     } catch (err) {
+      console.error(err);
       setError("削除に失敗しました。");
     }
   };
 
   if (!token) return <RequireAuthAlert />;
-
   if (!todo) return <div>読み込み中...</div>;
 
   return (
@@ -102,12 +105,19 @@ function TodoDetail() {
             <Button variant="primary" className="me-2" onClick={handleUpdate}>
               更新
             </Button>
-            <Button variant="danger" onClick={handleDelete}>
+            <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
               削除
             </Button>
           </Form>
         </Card.Body>
       </Card>
+
+      {/* ConfirmDeleteModal */}
+      <ConfirmDeleteModal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteConfirm}
+      />
     </Container>
   );
 }
