@@ -7,7 +7,7 @@ import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { paths } from "../types/api";
-import RequireAuthAlert from "../components/RequireAuthAlert";
+import { RequireAuthAlert } from "../components/auth";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import Loading from "../components/Loading";
 

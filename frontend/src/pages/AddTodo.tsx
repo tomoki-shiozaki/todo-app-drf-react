@@ -8,7 +8,7 @@ import TodoDataService from "../services/todos";
 import { useAuthContext } from "../context/AuthContext";
 import type { FormEvent } from "react";
 import type { paths } from "../types/api";
-import RequireAuthAlert from "../components/RequireAuthAlert";
+import { RequireAuthAlert } from "../components/auth";
 
 type CreateTodoRequest =
   paths["/api/v1/todos/"]["post"]["requestBody"]["content"]["application/json"];
