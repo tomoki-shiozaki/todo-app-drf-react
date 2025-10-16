@@ -1,22 +1,13 @@
-import { Container } from "react-bootstrap";
-
-import AppRoutes from "./AppRoutes";
-
 import { AuthProvider } from "./context/AuthContext";
 import { ErrorProvider } from "./context/ErrorContext";
-import { AppNavbar, ErrorAlert, Footer } from "./components/common";
+import { AppContent } from "./components/layout";
 
 function App() {
   return (
     <div className="App d-flex flex-column min-vh-100">
       <ErrorProvider>
         <AuthProvider>
-          <AppNavbar />
-          <Container className="mt-4 flex-grow-1">
-            <ErrorAlert />
-            <AppRoutes />
-          </Container>
-          <Footer />
+          <AppContent />
         </AuthProvider>
       </ErrorProvider>
     </div>

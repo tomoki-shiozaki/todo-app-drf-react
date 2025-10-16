@@ -295,14 +295,19 @@ export interface components {
         PatchedUserDetails: {
             /** ID */
             readonly pk?: number;
-            /** @description Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+            /**
+             * ユーザー名
+             * @description この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。
+             */
             username?: string;
             /**
-             * Email address
+             * メールアドレス
              * Format: email
              */
             readonly email?: string;
+            /** 名 */
             first_name?: string;
+            /** 姓 */
             last_name?: string;
         };
         Register: {
@@ -332,20 +337,26 @@ export interface components {
         };
         /** @description Serializer for Token model. */
         Token: {
+            /** キー */
             key: string;
         };
         /** @description User model w/o password */
         UserDetails: {
             /** ID */
             readonly pk: number;
-            /** @description Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+            /**
+             * ユーザー名
+             * @description この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。
+             */
             username: string;
             /**
-             * Email address
+             * メールアドレス
              * Format: email
              */
             readonly email: string;
+            /** 名 */
             first_name?: string;
+            /** 姓 */
             last_name?: string;
         };
         VerifyEmail: {

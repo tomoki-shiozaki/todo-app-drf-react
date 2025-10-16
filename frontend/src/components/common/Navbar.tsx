@@ -1,4 +1,4 @@
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
@@ -12,8 +12,9 @@ const AppNavbar = () => {
         <Navbar.Brand as={Link} to="/">
           Todo管理アプリ
         </Navbar.Brand>
+
         <Nav
-          className="me-auto"
+          className="me-auto align-items-center"
           variant="pills"
           activeKey={location.pathname}
           style={{ display: "flex", gap: "10px" }}
@@ -26,18 +27,14 @@ const AppNavbar = () => {
 
           {currentUsername ? (
             <Nav.Item>
-              <Nav.Link
-                as="button"
+              <Button
+                variant="outline-light"
+                size="sm"
+                className="align-middle"
                 onClick={logout}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#fff",
-                  cursor: "pointer",
-                }}
               >
                 ログアウト ({currentUsername})
-              </Nav.Link>
+              </Button>
             </Nav.Item>
           ) : (
             <>

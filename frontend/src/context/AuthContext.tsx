@@ -19,6 +19,7 @@ type SignupRequest =
 interface AuthContextType {
   currentUsername: string | null;
   token: string | null;
+  authLoading: boolean;
   login: (user: LoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   signup: (user: SignupRequest) => Promise<void>;
@@ -33,11 +34,14 @@ interface AuthProviderProps {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 // Provider コンポーネント
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const { setError } = useErrorContext();
 
+  // 初期認証状態の復元
   useEffect(() => {
     const savedUsername = localStorage.getItem(LOCALSTORAGE_USERNAME_KEY);
     const savedToken = localStorage.getItem(LOCALSTORAGE_TOKEN_KEY);
@@ -46,6 +50,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUsername(savedUsername);
       setToken(savedToken);
     }
+
+    setAuthLoading(false); // 認証判定が終わったことを通知
   }, []);
 
   const login = async (user: LoginRequest): Promise<void> => {
@@ -55,7 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
-      const data = await AuthService.login(user); // { key: "..." }
+      const data = await AuthService.login(user);
       const token = data.key;
       if (!token) throw new Error("No token returned from server.");
 
@@ -76,11 +82,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async (): Promise<void> => {
     try {
       if (token) {
-        await AuthService.logout(token); // state から取得
+        await AuthService.logout(token);
       }
     } catch (e: unknown) {
       console.error("Logout error:", e);
-      // エラーでもトークンはクリアしたいのでcatchに処理を入れておく
     } finally {
       setCurrentUsername(null);
       setToken(null);
@@ -109,10 +114,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
 
       const token = loginData.key;
-      if (!token)
-        throw new Error(
-          "ログインに失敗しました。トークンが返されませんでした。"
-        );
+      if (!token) throw new Error("ログインに失敗しました。");
 
       setToken(token);
       setCurrentUsername(user.username);
@@ -143,6 +145,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       value={{
         currentUsername,
         token,
+        authLoading,
         login,
         logout,
         signup,
