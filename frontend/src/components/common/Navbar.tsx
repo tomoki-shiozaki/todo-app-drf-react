@@ -1,10 +1,10 @@
-import { Navbar, Nav, Spinner, Button } from "react-bootstrap";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 
 const AppNavbar = () => {
   const location = useLocation();
-  const { currentUsername, logout, authLoading } = useAuthContext();
+  const { currentUsername, logout } = useAuthContext();
 
   return (
     <Navbar bg="primary" variant="dark">
@@ -25,11 +25,7 @@ const AppNavbar = () => {
             </Nav.Link>
           </Nav.Item>
 
-          {authLoading ? (
-            <Nav.Item>
-              <Spinner animation="border" size="sm" className="text-light" />
-            </Nav.Item>
-          ) : currentUsername ? (
+          {currentUsername ? (
             <Nav.Item>
               <Button
                 variant="outline-light"
