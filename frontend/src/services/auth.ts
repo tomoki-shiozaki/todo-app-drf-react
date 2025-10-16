@@ -25,9 +25,26 @@ class AuthService {
         data
       );
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during login:", error);
-      throw error;
+
+      const data = error.response?.data;
+
+      // DRF標準のキー順にエラーメッセージを抽出
+      const message =
+        data?.detail ||
+        data?.non_field_errors?.[0] ||
+        Object.values(data || {})[0]?.[0] ||
+        error.message ||
+        "ログインに失敗しました。";
+
+      // よくある英語メッセージを日本語化
+      const translated =
+        message === "Unable to log in with provided credentials."
+          ? "ユーザー名またはパスワードが正しくありません。"
+          : message;
+
+      throw new Error(translated);
     }
   }
 
