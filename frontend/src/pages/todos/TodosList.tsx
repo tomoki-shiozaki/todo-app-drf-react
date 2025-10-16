@@ -22,7 +22,7 @@ const TodosList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
 
-  const { token } = useAuthContext();
+  const { token, authLoading } = useAuthContext();
 
   useEffect(() => {
     if (!token) return;
@@ -78,6 +78,10 @@ const TodosList = () => {
       alert("完了状態の切り替えに失敗しました。");
     }
   };
+
+  if (authLoading) {
+    return <Loading message="認証情報を確認中..." />;
+  }
 
   if (!token) return <RequireAuthAlert />;
 
