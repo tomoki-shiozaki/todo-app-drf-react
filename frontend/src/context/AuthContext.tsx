@@ -56,14 +56,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = async (user: LoginRequest): Promise<void> => {
     if (!user || !user.username || !user.password) {
-      setError("ユーザー名とパスワードが必要です。");
-      throw new Error("認証が失敗しました。");
+      throw new Error("ユーザー名とパスワードが必要です。");
     }
 
     try {
       const data = await AuthService.login(user);
       const token = data.key;
-
       if (!token) throw new Error("サーバーからトークンが返されませんでした。");
 
       // 認証情報を state と localStorage に保存
@@ -71,12 +69,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUsername(user.username);
       localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
       localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
-
-      setError(""); // 成功時はエラーをクリア
     } catch (e: any) {
       console.error("login error:", e);
-      // interceptor で加工済みなので e.message をそのまま使う
-      setError(e.message || "ログインに失敗しました。");
+
+      // ネットワークエラーや認証サーバー落ちなどはグローバルエラーとして Context に通知
+      if (!e.response) {
+        setError("サーバーに接続できませんでした。");
+      }
+
+      // 失敗はそのまま呼び出し側で処理
       throw e;
     }
   };
