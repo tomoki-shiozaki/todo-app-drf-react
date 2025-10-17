@@ -13,9 +13,8 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.response.use(
   (response) => response, // 成功時はそのまま返す
   (error) => {
-    // エラー時に extractErrorMessage で整形して Promise.reject
-    const message = extractErrorMessage(error);
-    return Promise.reject(new Error(message));
+    error.message = extractErrorMessage(error); // messageだけ加工
+    return Promise.reject(error); // AxiosErrorのまま投げる
   }
 );
 
