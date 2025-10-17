@@ -1,5 +1,4 @@
 import apiClient from "./apiClient";
-import { extractErrorMessage } from "./errorHandler";
 import type { paths } from "../types/api"; // openapi-typescript で生成された型
 
 // 型の抽出
@@ -20,15 +19,12 @@ type SignupResponse =
 
 class AuthService {
   async login(data: LoginRequest): Promise<LoginResponse> {
-    try {
-      const response = await apiClient.post<LoginResponse>(
-        "/dj-rest-auth/login/",
-        data
-      );
-      return response.data;
-    } catch (error: any) {
-      throw new Error(extractErrorMessage(error));
-    }
+    // try/catch を書かなくても、エラー時には interceptor で整形される
+    const response = await apiClient.post<LoginResponse>(
+      "/dj-rest-auth/login/",
+      data
+    );
+    return response.data;
   }
 
   async logout(token: string): Promise<LogoutResponse> {
