@@ -7,7 +7,6 @@ import {
   LOCALSTORAGE_TOKEN_KEY,
   LOCALSTORAGE_USERNAME_KEY,
 } from "../constants/storage";
-import { extractErrorMessage } from "../services/errorHandler";
 
 // 型の抽出
 type LoginRequest =
@@ -79,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         !e.response ||
         (e.response.status >= 500 && e.response.status < 600)
       ) {
-        setError(extractErrorMessage(e));
+        setError(e.message);
       }
 
       // 失敗はそのまま呼び出し側で処理
