@@ -5,17 +5,11 @@ export const extractErrorMessage = (error: any): string => {
 
   if (typeof data === "string") return data;
 
-  const message =
+  return (
     data.detail ||
     data.non_field_errors?.[0] ||
     Object.values(data)[0]?.[0] ||
     error.message ||
-    "エラーが発生しました。";
-
-  switch (message) {
-    case "Unable to log in with provided credentials.":
-      return "ユーザー名またはパスワードが正しくありません。";
-    default:
-      return message;
-  }
+    "エラーが発生しました。"
+  );
 };
