@@ -41,16 +41,11 @@ class AuthService {
   }
 
   async signup(data: SignupRequest): Promise<SignupResponse> {
-    try {
-      const response = await apiClient.post<SignupResponse>(
-        "/dj-rest-auth/registration/",
-        data
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error during signup:", error);
-      throw error;
-    }
+    const response = await apiClient.post<SignupResponse>(
+      "/dj-rest-auth/registration/",
+      data
+    );
+    return response.data;
   }
 }
 
