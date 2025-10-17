@@ -7,6 +7,7 @@ import {
   LOCALSTORAGE_TOKEN_KEY,
   LOCALSTORAGE_USERNAME_KEY,
 } from "../constants/storage";
+import { extractErrorMessage } from "../services/errorHandler";
 
 // 型の抽出
 type LoginRequest =
@@ -73,8 +74,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error("login error:", e);
 
       // ネットワークエラーや認証サーバー落ちなどはグローバルエラーとして Context に通知
-      if (!e.response) {
-        setError("サーバーに接続できませんでした。");
+      // 重大なサーバー系エラーだけグローバルContextにセット（例：ネットワークエラー、500系など）
+      if (
+        !e.response ||
+        (e.response.status >= 500 && e.response.status < 600)
+      ) {
+        setError(extractErrorMessage(e));
       }
 
       // 失敗はそのまま呼び出し側で処理
