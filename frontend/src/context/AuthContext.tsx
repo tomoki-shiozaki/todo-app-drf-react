@@ -64,6 +64,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const token = data.key;
       if (!token) throw new Error("サーバーからトークンが返されませんでした。");
 
+      // 成功したのでグローバルエラーはクリア
+      setError(null);
+
       // 認証情報を state と localStorage に保存
       setToken(token);
       setCurrentUsername(user.username);
