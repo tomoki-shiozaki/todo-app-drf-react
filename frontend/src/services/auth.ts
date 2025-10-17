@@ -28,21 +28,16 @@ class AuthService {
   }
 
   async logout(token: string): Promise<LogoutResponse> {
-    try {
-      const response = await apiClient.post<LogoutResponse>(
-        "/dj-rest-auth/logout/",
-        {}, // requestBodyはないけどaxiosのpostは第2引数が必要なので空オブジェクト
-        {
-          headers: {
-            Authorization: token ? `Token ${token}` : "",
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error during logout:", error);
-      throw error;
-    }
+    const response = await apiClient.post<LogoutResponse>(
+      "/dj-rest-auth/logout/",
+      {}, // requestBodyはないけどaxiosのpostは第2引数が必要なので空オブジェクト
+      {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      }
+    );
+    return response.data;
   }
 
   async signup(data: SignupRequest): Promise<SignupResponse> {

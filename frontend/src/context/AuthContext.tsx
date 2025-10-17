@@ -94,9 +94,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (token) {
         await AuthService.logout(token);
       }
-    } catch (e: unknown) {
-      console.error("Logout error:", e);
+
+      // 成功したのでグローバルエラーはクリア
+      setError(null);
+    } catch (e: any) {
+      console.error("logout error:", e);
+
+      // ネットワークエラーや500系サーバーエラーだけグローバルに通知
+      if (
+        !e.response ||
+        (e.response.status >= 500 && e.response.status < 600)
+      ) {
+        setError(e.message);
+      }
+
+      // エラーは上位で必要に応じて処理
+      throw e;
     } finally {
+      // 認証情報を破棄（エラーがあっても確実に実行される）
       setCurrentUsername(null);
       setToken(null);
       localStorage.removeItem(LOCALSTORAGE_TOKEN_KEY);
