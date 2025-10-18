@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../../services/todos";
 import { useAuthContext } from "../../context/AuthContext";
+import { useErrorContext } from "../../context/ErrorContext";
 import type { paths } from "../../types/api";
 import { RequireAuthAlert } from "../../components/auth";
 import { ConfirmDeleteModal } from "../../components/todos";
@@ -25,22 +26,35 @@ const TodosList = () => {
 
   const { token } = useAuthContext();
 
+  const { setError: setGlobalError } = useErrorContext();
+
   // Todo一覧取得
   const fetchTodos = useCallback(async () => {
     if (!token) return;
 
     setLoading(true);
     setErrorMessage(null);
+
     try {
       const data = await TodoDataService.getAll(token);
       setTodos(data);
     } catch (error: any) {
       console.error("Failed to fetch todos:", error);
-      setErrorMessage(error.message);
+
+      if (
+        !error.response ||
+        (error.response.status >= 500 && error.response.status < 600)
+      ) {
+        // サーバー落ちやネットワーク障害など重大なエラーはグローバルに通知
+        setGlobalError(error.message);
+      } else {
+        // それ以外はローカルで通知
+        setErrorMessage(error.message);
+      }
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, setGlobalError]);
 
   useEffect(() => {
     fetchTodos();
