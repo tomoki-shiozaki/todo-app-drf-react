@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import { useAuthContext } from "../../context/AuthContext";
-import { Loading, AppNavbar, Footer, ErrorAlert } from "../common";
+import { Loading, AppNavbar, Footer, ErrorToast } from "../common";
 import AppRoutes from "../../AppRoutes";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -24,9 +24,9 @@ const AppContent = () => {
     <>
       <AppNavbar />
       <Container className="mt-4 flex-grow-1">
-        <ErrorAlert />
         <AppRoutes />
       </Container>
+      <ErrorToast />
       <Footer />
     </>
   );
