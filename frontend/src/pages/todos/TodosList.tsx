@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
@@ -17,92 +17,111 @@ type TodosListResponse =
 const TodosList = () => {
   const [todos, setTodos] = useState<TodosListResponse>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // モーダル用のstate
+  // モーダル制御用
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
 
   const { token } = useAuthContext();
 
-  useEffect(() => {
+  // Todo一覧取得
+  const fetchTodos = useCallback(async () => {
     if (!token) return;
 
-    const retrieveTodos = () => {
-      setLoading(true);
-      TodoDataService.getAll(token)
-        .then((data) => {
-          setTodos(data);
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.error(e);
-          setLoading(false);
-        });
-    };
-
-    retrieveTodos();
+    setLoading(true);
+    setErrorMessage(null);
+    try {
+      const data = await TodoDataService.getAll(token);
+      setTodos(data);
+    } catch (error: any) {
+      console.error("Failed to fetch todos:", error);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
   }, [token]);
 
-  const handleDeleteConfirm = async () => {
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  // 削除処理
+  const handleDeleteConfirm = useCallback(async () => {
     if (selectedTodoId === null || !token) return;
 
     try {
       await TodoDataService.deleteTodo(selectedTodoId, token);
-      setTodos((prevTodos) =>
-        prevTodos.filter((todo) => todo.id !== selectedTodoId)
-      );
+      setTodos((prev) => prev.filter((todo) => todo.id !== selectedTodoId));
       setShowDeleteModal(false);
       setSelectedTodoId(null);
-    } catch (e) {
-      console.error(e);
-      alert("削除に失敗しました。");
-    }
-  };
-
-  const handleComplete = async (id: number) => {
-    if (!token) {
-      alert("ログインが必要です。");
-      return;
-    }
-
-    try {
-      await TodoDataService.completeTodo(id, token);
-      // 完了トグルがサーバー側で行われるので、ローカルでも反映
-      setTodos((prev) =>
-        prev.map((todo) =>
-          todo.id === id ? { ...todo, completed: !todo.completed } : todo
-        )
-      );
     } catch (error) {
-      console.error("Failed to toggle completion:", error);
-      alert("完了状態の切り替えに失敗しました。");
+      console.error("Failed to delete todo:", error);
+      setErrorMessage("削除に失敗しました。");
     }
-  };
+  }, [selectedTodoId, token]);
 
+  // 完了状態のトグル
+  const handleComplete = useCallback(
+    async (id: number) => {
+      if (!token) {
+        setErrorMessage("ログインが必要です。");
+        return;
+      }
+
+      try {
+        await TodoDataService.completeTodo(id, token);
+        // 完了トグルがサーバー側で行われるので、ローカルでも反映
+        setTodos((prev) =>
+          prev.map((todo) =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+          )
+        );
+      } catch (error: any) {
+        console.error("Failed to toggle completion:", error);
+        setErrorMessage(error.message);
+      }
+    },
+    [token]
+  );
+
+  // 未ログイン時
   if (!token) return <RequireAuthAlert />;
 
-  if (loading) {
-    return <Loading message="Todoを読み込み中..." />;
-  }
+  // ローディング中
+  if (loading) return <Loading message="Todoを読み込み中..." />;
 
   return (
     <Container>
-      {/* 新規追加ボタン */}
-      <div className="mb-3">
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <h3>Todo一覧</h3>
+        {/* 新規追加ボタン */}
         <Link to="/todos/create">
           <Button variant="primary">新しいTodoを追加</Button>
         </Link>
       </div>
 
+      {/* ✅ エラーメッセージ表示 */}
+      {errorMessage && (
+        <Alert
+          variant="danger"
+          onClose={() => setErrorMessage(null)}
+          dismissible
+        >
+          {errorMessage}
+        </Alert>
+      )}
+
+      {/* Todo一覧 */}
       {todos.length === 0 ? (
         <Alert variant="info">Todoはありません。</Alert> // Todosがない場合のメッセージ
       ) : (
         todos.map((todo) => (
-          <Card key={todo.id} className="mb-3">
+          <Card key={todo.id} className="mb-3 shadow-sm">
             <Card.Body>
               <Card.Title>{todo.title}</Card.Title>
               <Card.Text>
-                <b>メモ：</b> {todo.memo}
+                <b>メモ：</b> {todo.memo || "（なし）"}
               </Card.Text>
               <Card.Text>
                 <b>作成日：</b>{" "}
@@ -151,7 +170,7 @@ const TodosList = () => {
         ))
       )}
 
-      {/* ConfirmDeleteModal */}
+      {/* 削除確認モーダル */}
       <ConfirmDeleteModal
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
