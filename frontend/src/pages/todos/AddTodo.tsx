@@ -18,27 +18,30 @@ function AddTodo() {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
   const { token } = useAuthContext();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!token) {
       setError("認証情報がありません。再ログインしてください。");
       return;
     }
 
+    setError(null);
+    setLoading(true);
     const data: CreateTodoRequestData = { title, memo };
 
     try {
       await TodoDataService.createTodo(data, token);
-      setError(null);
       navigate("/todos");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error creating todo:", err);
-      setError("Todoの追加に失敗しました。");
+      setError(err.message || "削除に失敗しました。");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,8 +76,8 @@ function AddTodo() {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
-          追加
+        <Button variant="primary" type="submit" disabled={loading}>
+          {loading ? "追加中..." : "追加"}
         </Button>
       </Form>
     </Container>
