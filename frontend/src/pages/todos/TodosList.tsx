@@ -46,6 +46,8 @@ const TodosList = () => {
       ) {
         // サーバー落ちやネットワーク障害など重大なエラーはグローバルに通知
         setGlobalError(error.message);
+        // コンテキスト的にも意味を補足
+        setLocalError("サーバーエラーにより、Todoを取得できませんでした。");
       } else {
         // それ以外はローカルで通知
         setLocalError(error.message);
