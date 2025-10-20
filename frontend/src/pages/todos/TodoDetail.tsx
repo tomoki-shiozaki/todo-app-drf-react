@@ -119,86 +119,81 @@ function TodoDetail() {
 
   if (!token) return <RequireAuthAlert />;
   if (loading) return <Loading message="Todoを読み込み中..." />;
-  if (!todo) {
-    return (
-      <Container className="mt-5" style={{ maxWidth: "600px" }}>
-        {localError && (
-          <Alert
-            variant="danger"
-            dismissible
-            onClose={() => setLocalError(null)}
-          >
-            {localError}
-          </Alert>
-        )}
-        {!localError && !loading && (
-          <Alert variant="info">Todoが見つかりません。</Alert>
-        )}
-        {!localError && loading && <Loading message="Todoを読み込み中..." />}
-      </Container>
-    );
-  }
 
   return (
     <Container className="mt-5" style={{ maxWidth: "600px" }}>
-      <Card>
-        <Card.Body>
-          <Card.Title>Todo詳細</Card.Title>
+      {!todo ? (
+        <Alert
+          variant={localError ? "danger" : "info"}
+          dismissible
+          onClose={() => setLocalError(null)}
+        >
+          {localError || "Todoが見つかりません。"}
+        </Alert>
+      ) : (
+        <>
+          <Card>
+            <Card.Body>
+              <Card.Title>Todo詳細</Card.Title>
 
-          {/* ローカルエラー */}
-          {localError && (
-            <Alert
-              variant="danger"
-              onClose={() => setLocalError(null)}
-              dismissible
-            >
-              {localError}
-            </Alert>
-          )}
+              {localError && (
+                <Alert
+                  variant="danger"
+                  dismissible
+                  onClose={() => setLocalError(null)}
+                >
+                  {localError}
+                </Alert>
+              )}
 
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>タイトル</Form.Label>
-              <Form.Control
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Form.Group>
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>タイトル</Form.Label>
+                  <Form.Control
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>メモ</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={10}
-                value={memo}
-                onChange={(e) => setMemo(e.target.value)}
-              />
-            </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>メモ</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={10}
+                    value={memo}
+                    onChange={(e) => setMemo(e.target.value)}
+                  />
+                </Form.Group>
 
-            <Button variant="primary" className="me-2" onClick={handleUpdate}>
-              更新
-            </Button>
-            <Button
-              variant="danger"
-              className="me-2"
-              onClick={() => setShowDeleteModal(true)}
-              disabled={deleting}
-            >
-              {deleting ? "削除中..." : "削除"}
-            </Button>
-            <Button variant="secondary" onClick={() => navigate("/todos")}>
-              Todo一覧へ戻る
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
+                <Button
+                  variant="primary"
+                  className="me-2"
+                  onClick={handleUpdate}
+                >
+                  更新
+                </Button>
+                <Button
+                  variant="danger"
+                  className="me-2"
+                  onClick={() => setShowDeleteModal(true)}
+                  disabled={deleting}
+                >
+                  {deleting ? "削除中..." : "削除"}
+                </Button>
+                <Button variant="secondary" onClick={() => navigate("/todos")}>
+                  Todo一覧へ戻る
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
 
-      {/* 削除確認モーダル */}
-      <ConfirmDeleteModal
-        show={showDeleteModal}
-        onHide={() => setShowDeleteModal(false)}
-        onConfirm={handleDeleteConfirm}
-      />
+          <ConfirmDeleteModal
+            show={showDeleteModal}
+            onHide={() => setShowDeleteModal(false)}
+            onConfirm={handleDeleteConfirm}
+          />
+        </>
+      )}
     </Container>
   );
 }
