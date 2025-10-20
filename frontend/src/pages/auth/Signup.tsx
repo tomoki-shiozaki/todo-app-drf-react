@@ -1,47 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
+import { useAuthContext } from "../../context/AuthContext";
+import { Loading } from "../../components/common";
 
-type SignupFormData = {
-  username: string;
-  email: string;
-  password1: string;
-  password2: string;
-};
-
-function Signup() {
-  const { signup, token } = useAuthContext();
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState<SignupFormData>({
-    username: "",
-    email: "",
-    password1: "",
-    password2: "",
-  });
-
-  const [loading, setLoading] = useState(false);
+const Signup = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password1, setPassword1] = useState("");
+  const [password2, setPassword2] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const { token, signup } = useAuthContext();
 
   // すでにログイン済みなら /todos にリダイレクト
   useEffect(() => {
-    if (token) {
-      navigate("/todos");
-    }
+    if (token) navigate("/todos");
   }, [token, navigate]);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,20 +31,34 @@ function Signup() {
     setError(null);
 
     try {
-      await signup(formData);
+      // バリデーション: 必須チェックとパスワード一致チェック
+      if (!username || !email || !password1 || !password2) {
+        throw new Error("すべてのフィールドを入力してください。");
+      }
+      if (password1 !== password2) {
+        throw new Error("パスワードが一致しません。");
+      }
 
-      // 成功してトークンが保存されていれば、ログイン済とみなして遷移
-      const token = localStorage.getItem("token");
-      if (token) {
+      await signup({ username, email, password1, password2 });
+
+      // 成功してトークンが保存されていれば遷移
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
         navigate("/todos");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("登録に失敗しました。入力内容を確認してください。");
+      setError(
+        err.message || "登録に失敗しました。入力内容を確認してください。"
+      );
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loading message="登録処理中..." />;
+  }
 
   return (
     <Container className="mt-5" style={{ maxWidth: "500px" }}>
@@ -75,10 +71,11 @@ function Signup() {
           <Form.Label>ユーザー名</Form.Label>
           <Form.Control
             type="text"
-            name="username"
             placeholder="ユーザー名を入力"
-            value={formData.username}
-            onChange={handleChange}
+            value={username}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setUsername(e.target.value)
+            }
             required
             disabled={loading}
           />
@@ -88,10 +85,11 @@ function Signup() {
           <Form.Label>メールアドレス</Form.Label>
           <Form.Control
             type="email"
-            name="email"
             placeholder="メールアドレスを入力"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             required
             disabled={loading}
           />
@@ -101,10 +99,11 @@ function Signup() {
           <Form.Label>パスワード</Form.Label>
           <Form.Control
             type="password"
-            name="password1"
             placeholder="パスワードを入力"
-            value={formData.password1}
-            onChange={handleChange}
+            value={password1}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword1(e.target.value)
+            }
             required
             disabled={loading}
           />
@@ -114,10 +113,11 @@ function Signup() {
           <Form.Label>パスワード（確認用）</Form.Label>
           <Form.Control
             type="password"
-            name="password2"
             placeholder="確認用パスワードを入力"
-            value={formData.password2}
-            onChange={handleChange}
+            value={password2}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword2(e.target.value)
+            }
             required
             disabled={loading}
           />
@@ -148,6 +148,6 @@ function Signup() {
       </Form>
     </Container>
   );
-}
+};
 
 export default Signup;

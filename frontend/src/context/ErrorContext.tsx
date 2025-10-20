@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 
 // Contextで扱う値の型
@@ -19,7 +19,7 @@ const ErrorContext = createContext<ErrorContextType | null>(null);
 export const ErrorProvider = ({ children }: ErrorProviderProps) => {
   const [error, setError] = useState<string | null>(null);
 
-  const clearError = () => setError(null);
+  const clearError = useCallback(() => setError(null), []);
 
   return (
     <ErrorContext.Provider value={{ error, setError, clearError }}>

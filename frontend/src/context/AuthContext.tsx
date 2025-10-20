@@ -56,26 +56,36 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = async (user: LoginRequest): Promise<void> => {
     if (!user || !user.username || !user.password) {
-      setError("Username and password are required.");
-      return;
+      throw new Error("ユーザー名とパスワードが必要です。");
     }
 
     try {
       const data = await AuthService.login(user);
       const token = data.key;
-      if (!token) throw new Error("No token returned from server.");
+      if (!token) throw new Error("サーバーからトークンが返されませんでした。");
 
+      // 成功したのでグローバルエラーはクリア
+      setError(null);
+
+      // 認証情報を state と localStorage に保存
       setToken(token);
       setCurrentUsername(user.username);
-
       localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
       localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
-
-      setError("");
     } catch (e: any) {
       console.error("login error:", e);
-      const message = e.response?.data?.detail || e.message || "Login failed.";
-      setError(message);
+
+      // ネットワークエラーや認証サーバー落ちなどはグローバルエラーとして Context に通知
+      // 重大なサーバー系エラーだけグローバルContextにセット（例：ネットワークエラー、500系など）
+      if (
+        !e.response ||
+        (e.response.status >= 500 && e.response.status < 600)
+      ) {
+        setError(e.message);
+      }
+
+      // 失敗はそのまま呼び出し側で処理
+      throw e;
     }
   };
 
@@ -84,9 +94,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (token) {
         await AuthService.logout(token);
       }
-    } catch (e: unknown) {
-      console.error("Logout error:", e);
+
+      // 成功したのでグローバルエラーはクリア
+      setError(null);
+    } catch (e: any) {
+      console.error("logout error:", e);
+
+      // ネットワークエラーや500系サーバーエラーだけグローバルに通知
+      if (
+        !e.response ||
+        (e.response.status >= 500 && e.response.status < 600)
+      ) {
+        setError(e.message);
+      }
+
+      // エラーは上位で必要に応じて処理
+      throw e;
     } finally {
+      // 認証情報を破棄（エラーがあっても確実に実行される）
       setCurrentUsername(null);
       setToken(null);
       localStorage.removeItem(LOCALSTORAGE_TOKEN_KEY);
@@ -102,41 +127,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       !user.password1 ||
       !user.password2
     ) {
-      setError("すべてのフィールドを入力してください。");
-      return;
+      throw new Error("すべてのフィールドを入力してください。");
     }
 
     try {
       await AuthService.signup(user);
+      // サインアップ成功後に自動ログイン
       const loginData = await AuthService.login({
         username: user.username,
         password: user.password1,
       });
 
       const token = loginData.key;
-      if (!token) throw new Error("ログインに失敗しました。");
+      if (!token) throw new Error("サーバーからトークンが返されませんでした。");
 
+      // 成功したのでグローバルエラーはクリア
+      setError(null);
+
+      // 認証情報を state と localStorage に保存
       setToken(token);
       setCurrentUsername(user.username);
       localStorage.setItem(LOCALSTORAGE_TOKEN_KEY, token);
       localStorage.setItem(LOCALSTORAGE_USERNAME_KEY, user.username);
-      setError("");
     } catch (e: any) {
       console.error("signup error:", e);
 
-      if (e.response && e.response.data) {
-        const firstError = Object.values(e.response.data)[0];
-
-        if (Array.isArray(firstError)) {
-          setError(String(firstError[0]));
-        } else if (typeof firstError === "string") {
-          setError(firstError);
-        } else {
-          setError("不明なエラーが発生しました。");
-        }
-      } else {
-        setError(e.message || "Signup failed.");
+      // ネットワークエラーや500系サーバーエラーだけグローバルに通知
+      if (
+        !e.response ||
+        (e.response.status >= 500 && e.response.status < 600)
+      ) {
+        setError(e.message);
       }
+
+      // エラーは呼び出し元で必要に応じて処理
+      throw e;
     }
   };
 

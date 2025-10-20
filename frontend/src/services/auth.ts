@@ -19,47 +19,33 @@ type SignupResponse =
 
 class AuthService {
   async login(data: LoginRequest): Promise<LoginResponse> {
-    try {
-      const response = await apiClient.post<LoginResponse>(
-        "/dj-rest-auth/login/",
-        data
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error during login:", error);
-      throw error;
-    }
+    // try/catch を書かなくても、エラー時には interceptor で整形される
+    const response = await apiClient.post<LoginResponse>(
+      "/dj-rest-auth/login/",
+      data
+    );
+    return response.data;
   }
 
   async logout(token: string): Promise<LogoutResponse> {
-    try {
-      const response = await apiClient.post<LogoutResponse>(
-        "/dj-rest-auth/logout/",
-        {}, // requestBodyはないけどaxiosのpostは第2引数が必要なので空オブジェクト
-        {
-          headers: {
-            Authorization: token ? `Token ${token}` : "",
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error during logout:", error);
-      throw error;
-    }
+    const response = await apiClient.post<LogoutResponse>(
+      "/dj-rest-auth/logout/",
+      {}, // requestBodyはないけどaxiosのpostは第2引数が必要なので空オブジェクト
+      {
+        headers: {
+          Authorization: token ? `Token ${token}` : "",
+        },
+      }
+    );
+    return response.data;
   }
 
   async signup(data: SignupRequest): Promise<SignupResponse> {
-    try {
-      const response = await apiClient.post<SignupResponse>(
-        "/dj-rest-auth/registration/",
-        data
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error during signup:", error);
-      throw error;
-    }
+    const response = await apiClient.post<SignupResponse>(
+      "/dj-rest-auth/registration/",
+      data
+    );
+    return response.data;
   }
 }
 

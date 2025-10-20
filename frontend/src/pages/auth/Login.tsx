@@ -35,12 +35,10 @@ const Login = () => {
 
     try {
       await login({ username, password });
-      navigate("/todos"); // ログイン成功後
-    } catch (err) {
+      navigate("/todos"); // 成功時は遷移
+    } catch (err: any) {
       console.error(err);
-      setError(
-        "ログインに失敗しました。ユーザー名とパスワードを確認してください。"
-      );
+      setError(err.message); // コンポーネント内で表示
     } finally {
       setLoading(false);
     }

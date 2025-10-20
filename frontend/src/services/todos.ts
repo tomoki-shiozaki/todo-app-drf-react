@@ -1,6 +1,7 @@
 import apiClient from "./apiClient";
 import type { paths } from "../types/api"; // openapi-typescript で生成された型ファイル
 
+// --- 型定義 ---
 type TodosListResponse =
   paths["/api/v1/todos/"]["get"]["responses"]["200"]["content"]["application/json"];
 
@@ -22,45 +23,36 @@ type UpdateTodoResponse =
 type CompleteTodoResponse =
   paths["/api/v1/todos/{id}/complete/"]["put"]["responses"]["200"]["content"];
 
+// --- クラス定義 ---
 class TodoDataService {
+  // 全件取得
   async getAll(token: string): Promise<TodosListResponse> {
-    try {
-      const response = await apiClient.get<TodosListResponse>("/todos/", {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async createTodo(
-    data: CreateTodoRequestData,
-    token: string
-  ): Promise<CreateTodoResponse> {
-    try {
-      const response = await apiClient.post<CreateTodoResponse>(
-        "/todos/",
-        data,
-        { headers: { Authorization: `Token ${token}` } }
-      );
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getTodoById(id: string, token: string): Promise<GetTodoResponse> {
-    const response = await apiClient.get<GetTodoResponse>(`/todos/${id}/`, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
+    const response = await apiClient.get<TodosListResponse>("/todos/", {
+      headers: { Authorization: `Token ${token}` },
     });
     return response.data;
   }
 
+  // 新規作成
+  async createTodo(
+    data: CreateTodoRequestData,
+    token: string
+  ): Promise<CreateTodoResponse> {
+    const response = await apiClient.post<CreateTodoResponse>("/todos/", data, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    return response.data;
+  }
+
+  // ID指定で取得
+  async getTodoById(id: string, token: string): Promise<GetTodoResponse> {
+    const response = await apiClient.get<GetTodoResponse>(`/todos/${id}/`, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    return response.data;
+  }
+
+  // 更新
   async updateTodo(
     id: string,
     data: UpdateTodoRequestData,
@@ -69,40 +61,29 @@ class TodoDataService {
     const response = await apiClient.put<UpdateTodoResponse>(
       `/todos/${id}/`,
       data,
-      {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      }
+      { headers: { Authorization: `Token ${token}` } }
     );
     return response.data;
   }
 
+  // 削除
   async deleteTodo(id: string | number, token: string): Promise<void> {
     await apiClient.delete(`/todos/${id}/`, {
       headers: { Authorization: `Token ${token}` },
     });
   }
 
+  // 完了処理
   async completeTodo(
     id: string | number,
     token: string
   ): Promise<CompleteTodoResponse> {
-    try {
-      const response = await apiClient.put<CompleteTodoResponse>(
-        `/todos/${id}/complete/`,
-        null,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error completing todo:", error);
-      throw error;
-    }
+    const response = await apiClient.put<CompleteTodoResponse>(
+      `/todos/${id}/complete/`,
+      null,
+      { headers: { Authorization: `Token ${token}` } }
+    );
+    return response.data;
   }
 }
 
