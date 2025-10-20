@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import TodoDataService from "../../services/todos";
 import { useAuthContext } from "../../context/AuthContext";
+import { useErrorContext } from "../../context/ErrorContext";
 import type { FormEvent } from "react";
 import type { paths } from "../../types/api";
 import { RequireAuthAlert } from "../../components/auth";
@@ -17,21 +18,24 @@ type CreateTodoRequestData = Pick<CreateTodoRequest, "title" | "memo">;
 function AddTodo() {
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [localError, setLocalError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { token } = useAuthContext();
+  const { setError: setGlobalError } = useErrorContext();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!token) {
-      setError("認証情報がありません。再ログインしてください。");
+      setLocalError("認証情報がありません。再ログインしてください。");
       return;
     }
 
-    setError(null);
+    setLocalError(null);
     setLoading(true);
+
     const data: CreateTodoRequestData = { title, memo };
 
     try {
@@ -39,7 +43,19 @@ function AddTodo() {
       navigate("/todos");
     } catch (err: any) {
       console.error("Error creating todo:", err);
-      setError(err.message || "削除に失敗しました。");
+      // サーバー系エラーはグローバル
+      if (
+        !err.response ||
+        (err.response.status >= 500 && err.response.status < 600)
+      ) {
+        setGlobalError(
+          err.message || "サーバーエラーによりTodoを作成できませんでした。"
+        );
+        setLocalError("サーバーエラーによりTodoを作成できませんでした。");
+      } else {
+        // 500系以外はローカル
+        setLocalError(err.message || "Todoの作成に失敗しました。");
+      }
     } finally {
       setLoading(false);
     }
@@ -51,7 +67,11 @@ function AddTodo() {
     <Container className="mt-4" style={{ maxWidth: "600px" }}>
       <h2 className="mb-4">新しいTodoを追加</h2>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+      {localError && (
+        <Alert variant="danger" dismissible onClose={() => setLocalError(null)}>
+          {localError}
+        </Alert>
+      )}
 
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
