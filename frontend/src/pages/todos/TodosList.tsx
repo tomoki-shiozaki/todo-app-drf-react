@@ -18,14 +18,13 @@ type TodosListResponse =
 const TodosList = () => {
   const [todos, setTodos] = useState<TodosListResponse>([]);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [localError, setLocalError] = useState<string | null>(null);
 
   // モーダル制御用
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
 
   const { token } = useAuthContext();
-
   const { setError: setGlobalError } = useErrorContext();
 
   // Todo一覧取得
@@ -33,7 +32,7 @@ const TodosList = () => {
     if (!token) return;
 
     setLoading(true);
-    setErrorMessage(null);
+    setLocalError(null);
 
     try {
       const data = await TodoDataService.getAll(token);
@@ -49,7 +48,7 @@ const TodosList = () => {
         setGlobalError(error.message);
       } else {
         // それ以外はローカルで通知
-        setErrorMessage(error.message);
+        setLocalError(error.message);
       }
     } finally {
       setLoading(false);
@@ -71,7 +70,7 @@ const TodosList = () => {
       setSelectedTodoId(null);
     } catch (error) {
       console.error("Failed to delete todo:", error);
-      setErrorMessage("削除に失敗しました。");
+      setLocalError("削除に失敗しました。");
     }
   }, [selectedTodoId, token]);
 
@@ -79,7 +78,7 @@ const TodosList = () => {
   const handleComplete = useCallback(
     async (id: number) => {
       if (!token) {
-        setErrorMessage("ログインが必要です。");
+        setLocalError("ログインが必要です。");
         return;
       }
 
@@ -93,7 +92,7 @@ const TodosList = () => {
         );
       } catch (error: any) {
         console.error("Failed to toggle completion:", error);
-        setErrorMessage(error.message);
+        setLocalError(error.message);
       }
     },
     [token]
@@ -115,74 +114,71 @@ const TodosList = () => {
         </Link>
       </div>
 
-      {/* ✅ エラーメッセージ表示 */}
-      {errorMessage && (
-        <Alert
-          variant="danger"
-          onClose={() => setErrorMessage(null)}
-          dismissible
-        >
-          {errorMessage}
+      {/* ✅ ローカルエラー表示 */}
+      {localError && (
+        <Alert variant="danger" onClose={() => setLocalError(null)} dismissible>
+          {localError}
         </Alert>
       )}
 
-      {/* Todo一覧 */}
-      {todos.length === 0 ? (
-        <Alert variant="info">Todoはありません。</Alert> // Todosがない場合のメッセージ
-      ) : (
-        todos.map((todo) => (
-          <Card key={todo.id} className="mb-3 shadow-sm">
-            <Card.Body>
-              <Card.Title>{todo.title}</Card.Title>
-              <Card.Text>
-                <b>メモ：</b> {todo.memo || "（なし）"}
-              </Card.Text>
-              <Card.Text>
-                <b>作成日：</b>{" "}
-                {new Date(todo.created).toLocaleString("ja-JP", {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Card.Text>
-              <Card.Text>
-                <b>状態：</b>{" "}
-                <span style={{ color: todo.completed ? "green" : "red" }}>
-                  {todo.completed ? "完了" : "未完了"}
-                </span>
-              </Card.Text>
+      {/* Todo一覧または空表示 */}
+      {!localError &&
+        (todos.length === 0 ? (
+          <Alert variant="info">Todoはありません。</Alert>
+        ) : (
+          todos.map((todo) => (
+            <Card key={todo.id} className="mb-3 shadow-sm">
+              <Card.Body>
+                <Card.Title>{todo.title}</Card.Title>
+                <Card.Text>
+                  <b>メモ：</b> {todo.memo || "（なし）"}
+                </Card.Text>
+                <Card.Text>
+                  <b>作成日：</b>{" "}
+                  {new Date(todo.created).toLocaleString("ja-JP", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Card.Text>
+                <Card.Text>
+                  <b>状態：</b>{" "}
+                  <span style={{ color: todo.completed ? "green" : "red" }}>
+                    {todo.completed ? "完了" : "未完了"}
+                  </span>
+                </Card.Text>
 
-              <div className="d-flex flex-wrap gap-2 mt-2">
-                {/* 完了ボタン */}
-                <Button
-                  variant={todo.completed ? "secondary" : "success"}
-                  onClick={() => handleComplete(todo.id)}
-                >
-                  {todo.completed ? "未完了に戻す" : "完了にする"}
-                </Button>
+                <div className="d-flex flex-wrap gap-2 mt-2">
+                  {/* 完了ボタン */}
+                  <Button
+                    variant={todo.completed ? "secondary" : "success"}
+                    onClick={() => handleComplete(todo.id)}
+                  >
+                    {todo.completed ? "未完了に戻す" : "完了にする"}
+                  </Button>
 
-                {/* 編集ボタン */}
-                <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
-                  <Button variant="outline-info">編集</Button>
-                </Link>
+                  {/* 編集ボタン */}
+                  <Link to={`/todos/${todo.id}`} state={{ currentTodo: todo }}>
+                    <Button variant="outline-info">編集</Button>
+                  </Link>
 
-                {/* 削除ボタン（モーダルを開く） */}
-                <Button
-                  variant="outline-danger"
-                  onClick={() => {
-                    setSelectedTodoId(todo.id);
-                    setShowDeleteModal(true);
-                  }}
-                >
-                  削除
-                </Button>
-              </div>
-            </Card.Body>
-          </Card>
-        ))
-      )}
+                  {/* 削除ボタン（モーダルを開く） */}
+                  <Button
+                    variant="outline-danger"
+                    onClick={() => {
+                      setSelectedTodoId(todo.id);
+                      setShowDeleteModal(true);
+                    }}
+                  >
+                    削除
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          ))
+        ))}
 
       {/* 削除確認モーダル */}
       <ConfirmDeleteModal
