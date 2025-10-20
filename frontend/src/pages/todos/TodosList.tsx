@@ -68,11 +68,12 @@ const TodosList = () => {
     try {
       await TodoDataService.deleteTodo(selectedTodoId, token);
       setTodos((prev) => prev.filter((todo) => todo.id !== selectedTodoId));
+    } catch (error: any) {
+      console.error("Failed to delete todo:", error);
+      setLocalError(error.message || "削除に失敗しました。");
+    } finally {
       setShowDeleteModal(false);
       setSelectedTodoId(null);
-    } catch (error) {
-      console.error("Failed to delete todo:", error);
-      setLocalError("削除に失敗しました。");
     }
   }, [selectedTodoId, token]);
 
